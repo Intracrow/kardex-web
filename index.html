@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kardex Mueblería | Diseño y Fabricación a la Medida</title>
+    
+    <!-- Integración de Google Fonts para un diseño elegante -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <!-- Integración de Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Configuración personalizada de colores de Tailwind para la paleta de "Madera" -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        madera: {
+                            clara: '#F5E6D3', // Beige/Pino claro
+                            media: '#C19A6B', // Roble
+                            oscura: '#5C3A21', // Nogal/Caoba
+                            texto: '#2C1E16', // Café muy oscuro casi negro
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Estilos adicionales mínimos para efectos de superposición */
+        .hero-overlay {
+            background: linear-gradient(to right, rgba(92, 58, 33, 0.9), rgba(92, 58, 33, 0.6));
+        }
+        .card-zoom:hover img {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body class="font-sans text-madera-texto bg-[#FAFAFA] antialiased">
+
+    <!-- 1. Navbar Fijo -->
+    <nav class="fixed w-full z-50 bg-white/95 backdrop-blur-sm shadow-md transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <!-- Logotipo -->
+                <div class="flex-shrink-0 flex items-center gap-2">
+                    <!-- Ícono SVG genérico de mueblería/madera -->
+                    <svg class="w-8 h-8 text-madera-oscura" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                    </svg>
+                    <span class="font-serif font-bold text-2xl tracking-tight text-madera-oscura">Kardex<span class="text-madera-media">Web</span></span>
+                </div>
+                
+                <!-- Menú Desktop -->
+                <div class="hidden md:flex space-x-8">
+                    <a href="#inicio" class="text-madera-texto hover:text-madera-media font-medium transition">Inicio</a>
+                    <a href="#catalogo" class="text-madera-texto hover:text-madera-media font-medium transition">Catálogo</a>
+                    <a href="#politicas" class="text-madera-texto hover:text-madera-media font-medium transition">Políticas</a>
+                    <a href="#contacto" class="text-madera-texto hover:text-madera-media font-medium transition">Contacto</a>
+                </div>
+
+                <!-- Botón Menú Móvil -->
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-btn" class="text-madera-oscura focus:outline-none">
+                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Menú Desplegable Móvil -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-100 shadow-lg absolute w-full">
+            <div class="px-4 pt-2 pb-6 space-y-2">
+                <a href="#inicio" class="block px-3 py-2 text-base font-medium text-madera-texto hover:bg-madera-clara rounded-md">Inicio</a>
+                <a href="#catalogo" class="block px-3 py-2 text-base font-medium text-madera-texto hover:bg-madera-clara rounded-md">Catálogo</a>
+                <a href="#politicas" class="block px-3 py-2 text-base font-medium text-madera-texto hover:bg-madera-clara rounded-md">Políticas Comerciales</a>
+                <a href="#contacto" class="block px-3 py-2 text-base font-medium text-madera-texto hover:bg-madera-clara rounded-md">Contacto</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 2. Hero Section -->
+    <section id="inicio" class="relative pt-20 pb-32 lg:pt-32 lg:pb-48 bg-madera-oscura overflow-hidden">
+        <!-- Imagen de fondo -->
+        <div class="absolute inset-0">
+            <img src="https://images.unsplash.com/photo-1556910103-1c02745aae4d?auto=format&fit=crop&q=80&w=1920" alt="Taller de carpintería fina" class="w-full h-full object-cover object-center opacity-40">
+        </div>
+        <div class="absolute inset-0 hero-overlay"></div>
+        
+        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-16 lg:mt-24">
+            <div class="max-w-2xl">
+                <span class="uppercase tracking-widest text-madera-clara text-sm font-semibold mb-4 block">Chihuahua, Chih.</span>
+                <h1 class="text-4xl sm:text-5xl lg:text-6xl font-serif font-bold text-white leading-tight mb-6">
+                    Diseño y fabricación de muebles de madera <span class="text-madera-media">100% a la medida</span>.
+                </h1>
+                <p class="text-lg text-madera-clara mb-10 max-w-xl font-light">
+                    Transformamos tus espacios con carpintería fina. Cocinas, clósets, salas y comedores creados exclusivamente para tu hogar por maestros ebanistas.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <a href="#catalogo" class="inline-flex justify-center items-center px-8 py-4 border border-transparent text-base font-medium rounded-lg text-white bg-madera-media hover:bg-[#a88258] shadow-lg transition duration-200">
+                        Ver Catálogo
+                    </a>
+                    <a href="#contacto" class="inline-flex justify-center items-center px-8 py-4 border-2 border-madera-clara text-base font-medium rounded-lg text-madera-clara hover:bg-madera-clara hover:text-madera-oscura transition duration-200">
+                        Cotizar mi Proyecto
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. Galería de Catálogo -->
+    <section id="catalogo" class="py-20 bg-[#FAFAFA]">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-serif font-bold text-madera-oscura mb-4">Nuestro Portafolio</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">Explora algunos de nuestros proyectos terminados. Cada pieza es única, diseñada y adaptada a las necesidades específicas de nuestros clientes.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Tarjeta Cocinas -->
+                <div class="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300 card-zoom cursor-pointer group">
+                    <div class="h-64 overflow-hidden relative">
+                        <img src="https://images.unsplash.com/photo-1556909211-36987daf7b4d?auto=format&fit=crop&q=80&w=800" alt="Cocina a la medida" class="w-full h-full object-cover transition-transform duration-500">
+                        <div class="absolute inset-0 bg-black bg-opacity-20 group-hover:bg-opacity-10 transition-all"></div>
+                    </div>
+                    <div class="p-6 border-t-4 border-madera-media">
+                        <h3 class="text-xl font-serif font-bold text-madera-oscura mb-2">Cocinas Integrales</h3>
+                        <p class="text-sm text-gray-600">Diseños funcionales con maderas finas y herrajes de alta calidad para el corazón de tu hogar.</p>
+                    </div>
+                </div>
+
+                <!-- Tarjeta Clósets -->
+                <div class="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300 card-zoom cursor-pointer group">
+                    <div class="h-64 overflow-hidden relative">
+                        <img src="https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?auto=format&fit=crop&q=80&w=800" alt="Clóset a la medida" class="w-full h-full object-cover transition-transform duration-500">
+                        <div class="absolute inset-0 bg-black bg-opacity-20 group-hover:bg-opacity-10 transition-all"></div>
+                    </div>
+                    <div class="p-6 border-t-4 border-madera-media">
+                        <h3 class="text-xl font-serif font-bold text-madera-oscura mb-2">Clósets y Vestidores</h3>
+                        <p class="text-sm text-gray-600">Optimización de espacios con acabados elegantes. Organización perfecta a tu medida.</p>
+                    </div>
+                </div>
+
+                <!-- Tarjeta Salas -->
+                <div class="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300 card-zoom cursor-pointer group">
+                    <div class="h-64 overflow-hidden relative">
+                        <img src="https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?auto=format&fit=crop&q=80&w=800" alt="Muebles para sala" class="w-full h-full object-cover transition-transform duration-500">
+                        <div class="absolute inset-0 bg-black bg-opacity-20 group-hover:bg-opacity-10 transition-all"></div>
+                    </div>
+                    <div class="p-6 border-t-4 border-madera-media">
+                        <h3 class="text-xl font-serif font-bold text-madera-oscura mb-2">Centros de Entretenimiento</h3>
+                        <p class="text-sm text-gray-600">Muebles para TV, mesas de centro y libreros que aportan calidez a tus áreas de convivencia.</p>
+                    </div>
+                </div>
+
+                <!-- Tarjeta Comedores -->
+                <div class="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300 card-zoom cursor-pointer group">
+                    <div class="h-64 overflow-hidden relative">
+                        <img src="https://images.unsplash.com/photo-1617806118233-18e1c0d36142?auto=format&fit=crop&q=80&w=800" alt="Comedor de madera" class="w-full h-full object-cover transition-transform duration-500">
+                        <div class="absolute inset-0 bg-black bg-opacity-20 group-hover:bg-opacity-10 transition-all"></div>
+                    </div>
+                    <div class="p-6 border-t-4 border-madera-media">
+                        <h3 class="text-xl font-serif font-bold text-madera-oscura mb-2">Comedores</h3>
+                        <p class="text-sm text-gray-600">Mesas robustas y sillas ergonómicas fabricadas para perdurar generaciones.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-12 text-center">
+                <p class="text-sm text-gray-500 italic">* Las imágenes son representativas de nuestro trabajo. Todo proyecto se fabrica desde cero según tus especificaciones.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. Sección de Políticas Comerciales (Reglas Estrictas) -->
+    <section id="politicas" class="py-20 bg-madera-clara relative">
+        <!-- Textura sutil -->
+        <div class="absolute inset-0 opacity-10 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4IiBoZWlnaHQ9IjgiPgo8cmVjdCB3aWR0aD0iOCIgaGVpZ2h0PSI4IiBmaWxsPSIjZmZmIj48L3JlY3Q+CjxwYXRoIGQ9Ik0wIDBMOCA4Wk04IDBMMCA4WiIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjEiPjwvcGF0aD4KPC9zdmc+')]"></div>
+        
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="bg-white rounded-2xl shadow-xl overflow-hidden">
+                <div class="bg-madera-oscura px-8 py-6 border-b border-madera-media">
+                    <h2 class="text-2xl md:text-3xl font-serif font-bold text-white flex items-center gap-3">
+                        <svg class="w-8 h-8 text-madera-media" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                        </svg>
+                        Políticas de Trabajo y Contratación
+                    </h2>
+                </div>
+                <div class="p-8 md:p-12">
+                    <p class="text-gray-700 mb-8 leading-relaxed">
+                        En <strong>Kardex Mueblería</strong> nos distinguimos por la honestidad, calidad y trato directo. Debido a que nuestro modelo es 100% fabricación sobre pedido, no manejamos ventas en línea ni inventarios. Operamos bajo los siguientes lineamientos irrevocables para proteger su inversión y garantizar la entrega de un mueble perfecto:
+                    </p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <!-- Política 1 -->
+                        <div class="flex items-start gap-4">
+                            <div class="flex-shrink-0 mt-1 bg-madera-clara p-2 rounded-full text-madera-oscura">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-madera-texto text-lg">Anticipo del 50% Obligatorio</h4>
+                                <p class="text-sm text-gray-600 mt-1">Para arrancar el diseño, compra de insumos de madera y agendar la producción de cualquier mueble, se requiere el 50% del total presupuestado sin excepción.</p>
+                            </div>
+                        </div>
+
+                        <!-- Política 2 -->
+                        <div class="flex items-start gap-4">
+                            <div class="flex-shrink-0 mt-1 bg-madera-clara p-2 rounded-full text-madera-oscura">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-madera-texto text-lg">Plazo de Liquidación</h4>
+                                <p class="text-sm text-gray-600 mt-1">El cliente dispone de un plazo máximo de <strong>3 a 4 meses</strong> para liquidar el 50% restante antes de la entrega e instalación del mobiliario en su domicilio.</p>
+                            </div>
+                        </div>
+
+                        <!-- Política 3 -->
+                        <div class="flex items-start gap-4">
+                            <div class="flex-shrink-0 mt-1 bg-madera-clara p-2 rounded-full text-madera-oscura">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-madera-texto text-lg">Métodos de Pago</h4>
+                                <p class="text-sm text-gray-600 mt-1">Los pagos se reciben única y exclusivamente mediante <strong>Efectivo</strong> o <strong>Transferencia Bancaria Directa</strong> (SPEI). No contamos con terminales para tarjetas de crédito ni débito.</p>
+                            </div>
+                        </div>
+
+                        <!-- Política 4 -->
+                        <div class="flex items-start gap-4">
+                            <div class="flex-shrink-0 mt-1 bg-madera-clara p-2 rounded-full text-madera-oscura">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-madera-texto text-lg">Trato 100% Presencial</h4>
+                                <p class="text-sm text-gray-600 mt-1">Toda cotización final, firma de contrato de trabajo, entrega de anticipos y cierre de venta se realiza de manera <strong>estrictamente presencial</strong> en nuestras oficinas / taller en Chihuahua.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5. Formulario de Contacto -->
+    <section id="contacto" class="py-20 bg-white">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-serif font-bold text-madera-oscura mb-4">Inicie su Cotización</h2>
+                <p class="text-gray-600">Déjenos sus datos y una breve descripción de lo que tiene en mente. Nuestra encargada de oficina se comunicará con usted para agendar una cita presencial.</p>
+            </div>
+
+            <div class="bg-white border border-gray-100 rounded-2xl shadow-xl p-8 md:p-10">
+                <form id="contactForm" class="space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Nombre -->
+                        <div>
+                            <label for="nombre" class="block text-sm font-medium text-gray-700 mb-1">Nombre Completo *</label>
+                            <input type="text" id="nombre" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-madera-media focus:border-transparent transition bg-gray-50 focus:bg-white" placeholder="Ej. Juan Pérez">
+                        </div>
+                        <!-- Teléfono -->
+                        <div>
+                            <label for="telefono" class="block text-sm font-medium text-gray-700 mb-1">Teléfono (Celular) *</label>
+                            <input type="tel" id="telefono" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-madera-media focus:border-transparent transition bg-gray-50 focus:bg-white" placeholder="Ej. 614 123 4567">
+                        </div>
+                    </div>
+
+                    <!-- Correo -->
+                    <div>
+                        <label for="correo" class="block text-sm font-medium text-gray-700 mb-1">Correo Electrónico (Opcional)</label>
+                        <input type="email" id="correo" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-madera-media focus:border-transparent transition bg-gray-50 focus:bg-white" placeholder="correo@ejemplo.com">
+                    </div>
+
+                    <!-- Proyecto -->
+                    <div>
+                        <label for="descripcion" class="block text-sm font-medium text-gray-700 mb-1">Describa brevemente el mueble que desea *</label>
+                        <textarea id="descripcion" rows="4" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-madera-media focus:border-transparent transition bg-gray-50 focus:bg-white resize-none" placeholder="Ej. Deseo cotizar una cocina integral de 3x3 metros en madera de encino..."></textarea>
+                    </div>
+                    
+                    <!-- Nota Aclaratoria -->
+                    <div class="bg-gray-50 p-4 rounded-lg text-xs text-gray-500 flex items-start gap-2">
+                        <svg class="w-5 h-5 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <p>Al enviar este formulario, usted comprende que las cotizaciones proporcionadas por este medio son aproximadas. La cotización real requerirá toma de medidas y firma presencial.</p>
+                    </div>
+
+                    <!-- Botón Enviar -->
+                    <div>
+                        <button type="submit" class="w-full flex justify-center py-4 px-4 border border-transparent rounded-lg shadow-sm text-lg font-medium text-white bg-madera-oscura hover:bg-madera-texto focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-madera-media transition-colors duration-200">
+                            Enviar Solicitud de Contacto
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer Simple -->
+    <footer class="bg-madera-texto text-gray-300 py-12 border-t border-[#3c2a1e]">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                    <h3 class="font-serif font-bold text-xl text-white mb-4">Kardex Mueblería</h3>
+                    <p class="text-sm leading-relaxed">Diseño y fabricación de muebles de madera a la medida. Calidad artesanal para hogares exigentes.</p>
+                </div>
+                <div>
+                    <h3 class="font-bold text-white mb-4">Ubicación y Horarios</h3>
+                    <p class="text-sm">Chihuahua, Chih., México.<br>
+                    Lunes a Viernes: 9:00 AM - 6:00 PM<br>
+                    Sábados: 9:00 AM - 2:00 PM</p>
+                </div>
+                <div>
+                    <h3 class="font-bold text-white mb-4">Aviso Importante</h3>
+                    <p class="text-sm">No realizamos ventas por internet. Este sitio es un catálogo informativo. Las transacciones son 100% presenciales.</p>
+                </div>
+            </div>
+            <div class="border-t border-[#4a3424] mt-8 pt-8 text-center text-sm">
+                <p>&copy; 2026 Kardex Mueblería. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 6. Botón Flotante de WhatsApp Business -->
+    <!-- El enlace pre-escribe un mensaje para facilitar el contacto -->
+    <a href="https://wa.me/526140000000?text=Hola%20Kardex%20Muebler%C3%ADa,%20vengo%20de%20su%20p%C3%A1gina%20web%20y%20me%20gustar%C3%ADa%20agendar%20una%20cita%20para%20cotizar%20un%20mueble." 
+       target="_blank" 
+       rel="noopener noreferrer"
+       class="fixed bottom-6 right-6 bg-[#25D366] text-white p-4 rounded-full shadow-2xl hover:bg-[#128C7E] hover:scale-110 transition-all duration-300 z-50 flex items-center justify-center group">
+        <!-- Ícono SVG de WhatsApp -->
+        <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.614-.087-.112-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86s.274.072.376-.043c.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.099.824zm-3.423-14.416c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm.082 21.319c-1.488 0-2.946-.381-4.229-1.101l-4.707 1.236 1.258-4.595c-.792-1.328-1.21-2.862-1.21-4.445 0-5.457 4.44-9.897 9.897-9.897 5.457 0 9.898 4.44 9.898 9.897 0 5.458-4.441 9.897-9.897 9.897l-.01-.002z"/>
+        </svg>
+        <span class="absolute right-16 bg-gray-900 text-white text-xs font-semibold px-3 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+            ¡Escríbenos!
+        </span>
+    </a>
+
+    <!-- Modal de Mensaje Customizado (Sustituto de alert() prohibido) -->
+    <div id="custom-modal" class="fixed inset-0 z-[100] hidden items-center justify-center">
+        <!-- Overlay -->
+        <div class="absolute inset-0 bg-black bg-opacity-60 backdrop-blur-sm" id="modal-overlay"></div>
+        <!-- Modal Content -->
+        <div class="relative bg-white rounded-2xl shadow-2xl p-8 max-w-sm w-full mx-4 transform transition-all">
+            <div class="text-center">
+                <!-- Ícono Check -->
+                <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mb-4">
+                    <svg class="h-6 w-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                </div>
+                <h3 class="text-lg leading-6 font-medium text-madera-oscura font-serif mb-2" id="modal-title">Solicitud Enviada</h3>
+                <div class="mt-2">
+                    <p class="text-sm text-gray-500">Gracias por su interés. Nuestra encargada de oficina revisará su solicitud y se pondrá en contacto con usted a la brevedad para agendar su cita.</p>
+                </div>
+                <div class="mt-6">
+                    <button type="button" id="close-modal-btn" class="w-full inline-flex justify-center rounded-lg border border-transparent shadow-sm px-4 py-2 bg-madera-media text-base font-medium text-white hover:bg-madera-oscura focus:outline-none sm:text-sm transition-colors">
+                        Entendido
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts de Interacción (Menú móvil y Envío de Formulario) -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Lógica Menú Móvil
+            const btn = document.getElementById('mobile-menu-btn');
+            const menu = document.getElementById('mobile-menu');
+            const menuLinks = menu.querySelectorAll('a');
+
+            btn.addEventListener('click', () => {
+                menu.classList.toggle('hidden');
+            });
+
+            // Cerrar menú móvil al hacer click en un enlace
+            menuLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    menu.classList.add('hidden');
+                });
+            });
+
+            // Lógica del Formulario de Contacto y Modal Custom
+            const form = document.getElementById('contactForm');
+            const modal = document.getElementById('custom-modal');
+            const closeModalBtn = document.getElementById('close-modal-btn');
+            const modalOverlay = document.getElementById('modal-overlay');
+
+            // Función para mostrar modal
+            const showModal = () => {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            };
+
+            // Función para ocultar modal
+            const hideModal = () => {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            };
+
+            // Prevenir recarga de página y simular envío
+            form.addEventListener('submit', (e) => {
+                e.preventDefault(); 
+                // Aquí iría la integración con un servicio de correo backend (ej. FormSpree o PHP local)
+                // Como es frontend puramente informativo, simulamos éxito mostrando el modal
+                showModal();
+                form.reset(); // Limpiar campos
+            });
+
+            // Cerrar modal al click en botón o fuera del modal
+            closeModalBtn.addEventListener('click', hideModal);
+            modalOverlay.addEventListener('click', hideModal);
+        });
+    </script>
+</body>
+</html>
