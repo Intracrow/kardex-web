@@ -237,7 +237,7 @@
             <!-- Grid de los 8 Productos -->
             <div class="p-6 md:p-8 overflow-y-auto custom-scrollbar bg-gray-50 flex-1">
                 <div id="category-items-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <!-- Dinámico por JavaScript (8 cards por categoría) -->
+                    <!-- Dinámico por JavaScript -->
                 </div>
             </div>
 
@@ -376,7 +376,7 @@
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-12">
                 <h2 class="text-3xl font-serif font-bold text-madera-oscura mb-4">Inicie su Cotización</h2>
-                <p class="text-gray-600">Déjenos sus datos y la especificación de su mueble. Nuestra encargada de oficina le llamará para coordinar la cita presencial.</p>
+                <p class="text-gray-600">Déjenos sus datos y la especificación de su mueble. Al presionar el botón se enviará la solicitud directamente a nuestro WhatsApp de oficina.</p>
             </div>
 
             <div class="bg-white border border-gray-100 rounded-2xl shadow-xl p-8 md:p-10">
@@ -404,12 +404,15 @@
                     
                     <div class="bg-gray-50 p-4 rounded-lg text-xs text-gray-500 flex items-start gap-2">
                         <svg class="w-5 h-5 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                        <p>Al enviar este formulario, comprende que las cotizaciones proporcionadas por este medio son estimadas. La toma de medidas finales y la firma del contrato se realizan en persona.</p>
+                        <p>Al hacer clic en enviar, se abrirá WhatsApp con el resumen de su mensaje listo para enviar a nuestra oficina.</p>
                     </div>
 
                     <div>
-                        <button type="submit" class="w-full flex justify-center py-4 px-4 border border-transparent rounded-lg shadow-sm text-lg font-medium text-white bg-madera-oscura hover:bg-madera-texto focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-madera-media transition-colors duration-200">
-                            Enviar Solicitud de Contacto
+                        <button type="submit" class="w-full flex justify-center items-center gap-3 py-4 px-4 border border-transparent rounded-lg shadow-sm text-lg font-medium text-white bg-[#25D366] hover:bg-[#128C7E] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#25D366] transition-colors duration-200">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.614-.087-.112-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86s.274.072.376-.043c.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.099.824zm-3.423-14.416c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm.082 21.319c-1.488 0-2.946-.381-4.229-1.101l-4.707 1.236 1.258-4.595c-.792-1.328-1.21-2.862-1.21-4.445 0-5.457 4.44-9.897 9.897-9.897 5.457 0 9.898 4.44 9.898 9.897 0 5.458-4.441 9.897-9.897 9.897l-.01-.002z"/>
+                            </svg>
+                            Enviar Cotización por WhatsApp
                         </button>
                     </div>
                 </form>
@@ -443,7 +446,7 @@
     </footer>
 
     <!-- Botón Flotante WhatsApp -->
-    <a href="https://wa.me/526140000000?text=Hola%20Kardex%20Muebler%C3%ADa,%20vengo%20de%20su%20p%C3%A1gina%20web%20y%20me%20gustar%C3%ADa%20agendar%20una%20cita%20para%20cotizar%20un%20mueble." 
+    <a href="https://wa.me/529182235998?text=Hola%20Kardex%20Muebler%C3%ADa,%20vengo%20de%20su%20p%C3%A1gina%20web%20y%20me%20gustar%C3%ADa%20agendar%20una%20cita%20para%20cotizar%20un%20mueble." 
        target="_blank" 
        rel="noopener noreferrer"
        class="fixed bottom-6 right-6 bg-[#25D366] text-white p-4 rounded-full shadow-2xl hover:bg-[#128C7E] hover:scale-110 transition-all duration-300 z-40 flex items-center justify-center group"
@@ -466,9 +469,9 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                     </svg>
                 </div>
-                <h3 class="text-lg leading-6 font-medium text-madera-oscura font-serif mb-2" id="modal-title">Solicitud Enviada</h3>
+                <h3 class="text-lg leading-6 font-medium text-madera-oscura font-serif mb-2" id="modal-title">Abriendo WhatsApp</h3>
                 <div class="mt-2">
-                    <p class="text-sm text-gray-500">Gracias por su interés. Nuestra encargada de oficina revisará su solicitud y se pondrá en contacto con usted a la brevedad.</p>
+                    <p class="text-sm text-gray-500">Se ha generado la solicitud. En breve se abrirá WhatsApp con el mensaje pre-redactado para enviar a la oficina.</p>
                 </div>
                 <div class="mt-6">
                     <button type="button" id="close-modal-btn" class="w-full inline-flex justify-center rounded-lg border border-transparent shadow-sm px-4 py-2 bg-madera-media text-base font-medium text-white hover:bg-madera-oscura transition-colors">
@@ -479,7 +482,7 @@
         </div>
     </div>
 
-    <!-- Scripts de Interacción y Datos del Catálogo (8 productos por categoría + Colores) -->
+    <!-- Scripts de Interacción y Datos del Catálogo -->
     <script>
         // Paleta base de tonos/colores de madera disponibles
         const maderaColores = [
@@ -779,7 +782,6 @@
             const colorsContainer = document.getElementById('color-swatches');
             colorsContainer.innerHTML = '';
             
-            // Seleccionar por defecto el primer color
             selectedColor = item.colores[0];
             document.getElementById('selected-color-name').textContent = selectedColor.nombre;
 
@@ -792,7 +794,6 @@
                 swatch.title = color.nombre;
 
                 swatch.onclick = () => {
-                    // Actualizar color activo visualmente
                     Array.from(colorsContainer.children).forEach(child => {
                         child.classList.remove('ring-2', 'ring-madera-media', 'ring-offset-2', 'border-white', 'scale-110');
                         child.classList.add('border-gray-300');
@@ -835,7 +836,7 @@
             descArea.focus();
         }
 
-        // Lógica de menús y formulario
+        // Lógica de menús y formulario con integración directa a WhatsApp
         document.addEventListener('DOMContentLoaded', () => {
             const btn = document.getElementById('mobile-menu-btn');
             const menu = document.getElementById('mobile-menu');
@@ -866,8 +867,28 @@
                 modal.classList.remove('flex');
             };
 
+            // Envío del Formulario a través de WhatsApp con el número especificado (9182235998)
             form.addEventListener('submit', (e) => {
                 e.preventDefault(); 
+
+                const nombre = document.getElementById('nombre').value;
+                const telefono = document.getElementById('telefono').value;
+                const correo = document.getElementById('correo').value || 'No proporcionado';
+                const descripcion = document.getElementById('descripcion').value;
+
+                // Construcción del texto formateado para WhatsApp
+                const mensaje = `*NUEVA SOLICITUD DE COTIZACIÓN - KARDEX MUEBLERÍA*\n\n` +
+                                `*Nombre:* ${nombre}\n` +
+                                `*Teléfono:* ${telefono}\n` +
+                                `*Correo:* ${correo}\n` +
+                                `*Detalle del Mueble:* ${descripcion}`;
+
+                // Número asignado con código de país México (+52)
+                const telefonoOficina = "529182235998"; 
+                const whatsappUrl = `https://wa.me/${telefonoOficina}?text=${encodeURIComponent(mensaje)}`;
+
+                // Abre la ventana de WhatsApp en pestaña nueva y muestra modal de confirmación
+                window.open(whatsappUrl, '_blank');
                 showModal();
                 form.reset();
             });
