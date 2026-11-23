@@ -356,7 +356,7 @@
         </div>
     </section>
 
-    <!-- 5. Formulario Estructurado de Solicitud de Cotización (Registro en Base de Datos / Hoja) -->
+    <!-- 5. Formulario Estructurado de Solicitud de Cotización -->
     <section id="contacto" class="py-20 bg-white">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-12">
@@ -365,22 +365,25 @@
             </div>
 
             <div class="bg-white border border-gray-100 rounded-2xl shadow-xl p-8 md:p-10">
-                <form id="contactForm" class="space-y-6">
+                <form id="contactForm" class="space-y-6" novalidate>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label for="nombre" class="block text-sm font-medium text-gray-700 mb-1">Nombre Completo *</label>
                             <input type="text" id="nombre" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-madera-media focus:border-transparent transition bg-gray-50 focus:bg-white" placeholder="Ej. Juan Pérez">
                         </div>
+
                         <div>
-                            <label for="telefono" class="block text-sm font-medium text-gray-700 mb-1">Teléfono (Celular) *</label>
-                            <input type="tel" id="telefono" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-madera-media focus:border-transparent transition bg-gray-50 focus:bg-white" placeholder="Ej. 614 123 4567">
+                            <label for="telefono" class="block text-sm font-medium text-gray-700 mb-1">Teléfono (10 dígitos) *</label>
+                            <input type="tel" id="telefono" inputmode="numeric" maxlength="10" pattern="[0-9]{10}" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-madera-media focus:border-transparent transition bg-gray-50 focus:bg-white" placeholder="Ej. 6141234567">
+                            <p id="error-telefono" class="text-xs text-red-600 mt-1 hidden">Ingrese exactamente 10 dígitos numéricos (ej. 6141234567).</p>
                         </div>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label for="correo" class="block text-sm font-medium text-gray-700 mb-1">Correo Electrónico (Opcional)</label>
-                            <input type="email" id="correo" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-madera-media focus:border-transparent transition bg-gray-50 focus:bg-white" placeholder="correo@ejemplo.com">
+                            <input type="email" id="correo" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-madera-media focus:border-transparent transition bg-gray-50 focus:bg-white" placeholder="correo@dominio.com">
+                            <p id="error-correo" class="text-xs text-red-600 mt-1 hidden">Ingrese un correo electrónico válido (ej. nombre@gmail.com).</p>
                         </div>
 
                         <div>
@@ -392,6 +395,7 @@
                                 <option value="Sala / Centro de Entretenimiento">Sala / Centro de Entretenimiento</option>
                                 <option value="Comedor / Mesa">Comedor / Mesa</option>
                             </select>
+                            <p id="error-tipoMueble" class="text-xs text-red-600 mt-1 hidden">Seleccione un tipo de mueble.</p>
                         </div>
                     </div>
 
@@ -414,6 +418,23 @@
                                 <option value="Pino Escandinavo">Pino Escandinavo</option>
                                 <option value="Gris Ahumado">Gris Ahumado</option>
                             </select>
+                            <p id="error-material" class="text-xs text-red-600 mt-1 hidden">Seleccione un material o tono.</p>
+                        </div>
+                    </div>
+
+                    <!-- Imagen de referencia para Modelo de Referencia -->
+                    <div class="bg-gray-50 p-4 rounded-xl border border-gray-200">
+                        <label for="imagenReferencia" class="block text-sm font-medium text-gray-700 mb-1">
+                            Imagen de Referencia del Modelo (Opcional — JPG, PNG o WEBP, máx. 1 MB)
+                        </label>
+                        <input type="file" id="imagenReferencia" accept="image/jpeg,image/png,image/webp" class="block w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-madera-clara file:text-madera-oscura hover:file:bg-madera-media hover:file:text-white transition">
+                        <p id="error-imagen" class="text-xs text-red-600 mt-1 hidden"></p>
+                        <div id="preview-imagen-box" class="mt-3 hidden items-center gap-4">
+                            <img id="preview-imagen-img" src="" alt="Vista previa de referencia" class="w-20 h-20 object-cover rounded-lg border border-gray-300">
+                            <div class="text-xs text-gray-600">
+                                <p id="preview-imagen-nombre" class="font-medium text-madera-texto"></p>
+                                <button type="button" id="btn-quitar-imagen" class="text-red-600 hover:underline mt-1">Quitar imagen</button>
+                            </div>
                         </div>
                     </div>
 
@@ -579,6 +600,8 @@
         let currentCategoryKey = '';
         let currentItemIndex = 0;
         let selectedColor = null;
+        let imagenReferenciaBase64 = '';
+        let imagenReferenciaNombre = 'Sin imagen adjunta';
 
         function populateModeloSelect(tipoSeleccionado = '', modeloPreseleccionado = '') {
             const modeloSelect = document.getElementById('modeloReferencia');
@@ -724,6 +747,21 @@
             contactoSection.scrollIntoView({ behavior: 'smooth' });
         }
 
+        function limpiarImagenReferencia() {
+            imagenReferenciaBase64 = '';
+            imagenReferenciaNombre = 'Sin imagen adjunta';
+            document.getElementById('imagenReferencia').value = '';
+            document.getElementById('preview-imagen-box').classList.add('hidden');
+            document.getElementById('preview-imagen-box').classList.remove('flex');
+            document.getElementById('error-imagen').classList.add('hidden');
+        }
+
+        function esCorreoValido(correo) {
+            // Estructura estándar: usuario@subdominio.dominio (mínimo 2 letras en extensión)
+            const regexCorreo = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+            return regexCorreo.test(correo);
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
             const btn = document.getElementById('mobile-menu-btn');
             const menu = document.getElementById('mobile-menu');
@@ -734,7 +772,75 @@
 
             document.getElementById('tipoMueble').addEventListener('change', (e) => {
                 populateModeloSelect(e.target.value);
+                document.getElementById('error-tipoMueble').classList.add('hidden');
             });
+
+            // Teléfono: solo dígitos y máximo 10 caracteres
+            const telInput = document.getElementById('telefono');
+            const errTel = document.getElementById('error-telefono');
+            telInput.addEventListener('input', () => {
+                telInput.value = telInput.value.replace(/\D/g, '').slice(0, 10);
+                if (telInput.value.length === 10) {
+                    errTel.classList.add('hidden');
+                }
+            });
+
+            // Correo: validar estructura real si se escribe algo
+            const correoInput = document.getElementById('correo');
+            const errCorreo = document.getElementById('error-correo');
+            correoInput.addEventListener('input', () => {
+                const val = correoInput.value.trim();
+                if (!val || esCorreoValido(val)) {
+                    errCorreo.classList.add('hidden');
+                }
+            });
+
+            // Imagen de referencia: validar tipo y tamaño (máx. 1 MB) y convertir a Base64
+            const imgInput = document.getElementById('imagenReferencia');
+            const errImg = document.getElementById('error-imagen');
+            const previewBox = document.getElementById('preview-imagen-box');
+            const previewImg = document.getElementById('preview-imagen-img');
+            const previewNombre = document.getElementById('preview-imagen-nombre');
+            const btnQuitarImg = document.getElementById('btn-quitar-imagen');
+
+            imgInput.addEventListener('change', () => {
+                errImg.classList.add('hidden');
+                const file = imgInput.files[0];
+                if (!file) {
+                    limpiarImagenReferencia();
+                    return;
+                }
+
+                const tiposPermitidos = ['image/jpeg', 'image/png', 'image/webp'];
+                const maxBytes = 1024 * 1024; // 1 MB
+
+                if (!tiposPermitidos.includes(file.type)) {
+                    errImg.textContent = "Solo se permiten imágenes en formato JPG, PNG o WEBP.";
+                    errImg.classList.remove('hidden');
+                    imgInput.value = '';
+                    return;
+                }
+
+                if (file.size > maxBytes) {
+                    errImg.textContent = "La imagen supera el límite de 1 MB. Reduzca su tamaño o peso.";
+                    errImg.classList.remove('hidden');
+                    imgInput.value = '';
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = () => {
+                    imagenReferenciaBase64 = reader.result;
+                    imagenReferenciaNombre = file.name;
+                    previewImg.src = imagenReferenciaBase64;
+                    previewNombre.textContent = file.name;
+                    previewBox.classList.remove('hidden');
+                    previewBox.classList.add('flex');
+                };
+                reader.readAsDataURL(file);
+            });
+
+            btnQuitarImg.addEventListener('click', limpiarImagenReferencia);
 
             const form = document.getElementById('contactForm');
             const submitBtn = document.getElementById('btn-submit-form');
@@ -759,6 +865,49 @@
             form.addEventListener('submit', async (e) => {
                 e.preventDefault();
 
+                const nombre = document.getElementById('nombre').value.trim();
+                const telefono = telInput.value.trim();
+                const correo = correoInput.value.trim();
+                const tipoMueble = document.getElementById('tipoMueble').value;
+                const modeloReferencia = document.getElementById('modeloReferencia').value;
+                const material = document.getElementById('material').value;
+                const aclaraciones = document.getElementById('aclaraciones').value.trim();
+
+                let formularioValido = true;
+
+                if (!nombre) {
+                    formularioValido = false;
+                    document.getElementById('nombre').focus();
+                }
+
+                if (!/^\d{10}$/.test(telefono)) {
+                    errTel.classList.remove('hidden');
+                    if (formularioValido) telInput.focus();
+                    formularioValido = false;
+                } else {
+                    errTel.classList.add('hidden');
+                }
+
+                if (correo && !esCorreoValido(correo)) {
+                    errCorreo.classList.remove('hidden');
+                    if (formularioValido) correoInput.focus();
+                    formularioValido = false;
+                } else {
+                    errCorreo.classList.add('hidden');
+                }
+
+                if (!tipoMueble) {
+                    document.getElementById('error-tipoMueble').classList.remove('hidden');
+                    formularioValido = false;
+                }
+
+                if (!material) {
+                    document.getElementById('error-material').classList.remove('hidden');
+                    formularioValido = false;
+                }
+
+                if (!formularioValido) return;
+
                 if (!GOOGLE_SHEETS_WEBAPP_URL || GOOGLE_SHEETS_WEBAPP_URL.includes("PEGA_AQUI")) {
                     showModal(
                         "Configuración pendiente",
@@ -771,13 +920,15 @@
                 submitBtn.textContent = "Registrando solicitud...";
 
                 const payload = {
-                    nombre: document.getElementById('nombre').value.trim(),
-                    telefono: document.getElementById('telefono').value.trim(),
-                    correo: document.getElementById('correo').value.trim() || 'No proporcionado',
-                    tipoMueble: document.getElementById('tipoMueble').value,
-                    modeloReferencia: document.getElementById('modeloReferencia').value,
-                    material: document.getElementById('material').value,
-                    aclaraciones: document.getElementById('aclaraciones').value.trim() || 'Ninguna'
+                    nombre,
+                    telefono,
+                    correo: correo || 'No proporcionado',
+                    tipoMueble,
+                    modeloReferencia,
+                    material,
+                    imagenNombre: imagenReferenciaNombre,
+                    imagenReferencia: imagenReferenciaBase64 || 'Sin imagen',
+                    aclaraciones: aclaraciones || 'Ninguna'
                 };
 
                 try {
@@ -793,6 +944,7 @@
                         "Su solicitud quedó registrada. La cotización formal, el anticipo del 50%, la liquidación en 3 a 4 meses y los pagos en efectivo o transferencia bancaria directa se realizan de manera presencial."
                     );
                     form.reset();
+                    limpiarImagenReferencia();
                     populateModeloSelect('');
                 } catch (err) {
                     showModal(
