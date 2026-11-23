@@ -522,8 +522,8 @@
 
     <!-- Scripts de Interacción y Datos del Catálogo -->
     <script>
-        // Pega aquí la URL de implementación de Google Apps Script (Web App)
-        const GOOGLE_SHEETS_WEBAPP_URL = "PEGA_AQUI_TU_URL_DE_GOOGLE_APPS_SCRIPT";
+        // URL de implementación de Google Apps Script (Web App)
+        const GOOGLE_SHEETS_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbxSMiNxqWydjk1kkBgX-I1RmZfn-kEpY9HB3xw00ji4Q7mQfkZlXM6MMz5_aKnWBV-p/exec";
 
         const maderaColores = [
             { nombre: "Encino Natural", hex: "#D2B48C" },
@@ -757,7 +757,6 @@
         }
 
         function esCorreoValido(correo) {
-            // Estructura estándar: usuario@subdominio.dominio (mínimo 2 letras en extensión)
             const regexCorreo = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
             return regexCorreo.test(correo);
         }
@@ -907,14 +906,6 @@
                 }
 
                 if (!formularioValido) return;
-
-                if (!GOOGLE_SHEETS_WEBAPP_URL || GOOGLE_SHEETS_WEBAPP_URL.includes("PEGA_AQUI")) {
-                    showModal(
-                        "Configuración pendiente",
-                        "Falta configurar la URL de Google Apps Script en el código para guardar las solicitudes en la hoja."
-                    );
-                    return;
-                }
 
                 submitBtn.disabled = true;
                 submitBtn.textContent = "Registrando solicitud...";
