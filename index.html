@@ -1,28 +1,813 @@
-function doPost(e) {
-  try {
-    const ss = SpreadsheetApp.getActiveSpreadsheet();
-    const sheet = ss.getSheetByName("Hoja 1") || ss.getSheets()[0];
-    const data = JSON.parse(e.postData.contents);
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kardex Mueblería | Diseño y Fabricación a la Medida</title>
+    
+    <!-- Integración de Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
 
-    sheet.appendRow([
-      new Date(),
-      data.nombre || "",
-      data.telefono || "",
-      data.correo || "",
-      data.tipoMueble || "",
-      data.modeloReferencia || "",
-      data.material || "",
-      data.aclaraciones || ""
-    ]);
+    <!-- Integración de Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Configuración personalizada de colores para la paleta de "Madera" -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        madera: {
+                            clara: '#F5E6D3',
+                            media: '#C19A6B',
+                            oscura: '#5C3A21',
+                            texto: '#2C1E16',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
 
-    return ContentService
-      .createTextOutput(JSON.stringify({ status: "ok" }))
-      .setMimeType(ContentService.MimeType.JSON);
-  } catch (err) {
-    return ContentService
-      .createTextOutput(JSON.stringify({ status: "error", message: err.message }))
-      .setMimeType(ContentService.MimeType.JSON);
-  }
-}
+    <style>
+        .hero-overlay {
+            background: linear-gradient(to right, rgba(92, 58, 33, 0.9), rgba(92, 58, 33, 0.6));
+        }
+        .card-zoom:hover img {
+            transform: scale(1.05);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #C19A6B;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body class="font-sans text-madera-texto bg-[#FAFAFA] antialiased">
+
+    <!-- 1. Navbar Fijo -->
+    <nav class="fixed w-full z-40 bg-white/95 backdrop-blur-sm shadow-md transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <!-- Logotipo -->
+                <div class="flex-shrink-0 flex items-center gap-2">
+                    <svg class="w-8 h-8 text-madera-oscura" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                    </svg>
+                    <span class="font-serif font-bold text-2xl tracking-tight text-madera-oscura">Kardex<span class="text-madera-media">Web</span></span>
+                </div>
+                
+                <!-- Menú Desktop -->
+                <div class="hidden md:flex space-x-8">
+                    <a href="#inicio" class="text-madera-texto hover:text-madera-media font-medium transition">Inicio</a>
+                    <a href="#catalogo" class="text-madera-texto hover:text-madera-media font-medium transition">Catálogo</a>
+                    <a href="#politicas" class="text-madera-texto hover:text-madera-media font-medium transition">Políticas</a>
+                    <a href="#contacto" class="text-madera-texto hover:text-madera-media font-medium transition">Cotización</a>
+                </div>
+
+                <!-- Botón Menú Móvil -->
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-btn" class="text-madera-oscura focus:outline-none" aria-label="Abrir menú">
+                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Menú Desplegable Móvil -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-100 shadow-lg absolute w-full">
+            <div class="px-4 pt-2 pb-6 space-y-2">
+                <a href="#inicio" class="block px-3 py-2 text-base font-medium text-madera-texto hover:bg-madera-clara rounded-md">Inicio</a>
+                <a href="#catalogo" class="block px-3 py-2 text-base font-medium text-madera-texto hover:bg-madera-clara rounded-md">Catálogo</a>
+                <a href="#politicas" class="block px-3 py-2 text-base font-medium text-madera-texto hover:bg-madera-clara rounded-md">Políticas Comerciales</a>
+                <a href="#contacto" class="block px-3 py-2 text-base font-medium text-madera-texto hover:bg-madera-clara rounded-md">Cotización</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 2. Hero Section -->
+    <section id="inicio" class="relative pt-20 pb-32 lg:pt-32 lg:pb-48 bg-madera-oscura overflow-hidden">
+        <div class="absolute inset-0">
+            <img src="https://images.unsplash.com/photo-1556910103-1c02745aae4d?auto=format&fit=crop&q=80&w=1920" alt="Taller de carpintería fina" class="w-full h-full object-cover object-center opacity-40">
+        </div>
+        <div class="absolute inset-0 hero-overlay"></div>
+        
+        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-16 lg:mt-24">
+            <div class="max-w-2xl">
+                <span class="uppercase tracking-widest text-madera-clara text-sm font-semibold mb-4 block">Chihuahua, Chih.</span>
+                <h1 class="text-4xl sm:text-5xl lg:text-6xl font-serif font-bold text-white leading-tight mb-6">
+                    Diseño y fabricación de muebles de madera <span class="text-madera-media">100% a la medida</span>.
+                </h1>
+                <p class="text-lg text-madera-clara mb-10 max-w-xl font-light">
+                    Transformamos tus espacios con carpintería fina. Cocinas, clósets, salas y comedores creados exclusivamente para tu hogar.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <a href="#catalogo" class="inline-flex justify-center items-center px-8 py-4 border border-transparent text-base font-medium rounded-lg text-white bg-madera-media hover:bg-[#a88258] shadow-lg transition duration-200">
+                        Ver Catálogo Completo
+                    </a>
+                    <a href="#contacto" class="inline-flex justify-center items-center px-8 py-4 border-2 border-madera-clara text-base font-medium rounded-lg text-madera-clara hover:bg-madera-clara hover:text-madera-oscura transition duration-200">
+                        Registrar Solicitud
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. Galería de Catálogo Principal -->
+    <section id="catalogo" class="py-20 bg-[#FAFAFA]">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-serif font-bold text-madera-oscura mb-4">Nuestro Portafolio</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">Haz clic en cualquier categoría para abrir la galería de modelos y seleccionar un tono de madera de referencia.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Tarjeta Cocinas -->
+                <div onclick="openCategoryModal('cocinas')" class="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 card-zoom cursor-pointer group flex flex-col justify-between border border-gray-100">
+                    <div>
+                        <div class="h-64 overflow-hidden relative">
+                            <img src="https://images.unsplash.com/photo-1556909211-36987daf7b4d?auto=format&fit=crop&q=80&w=800" alt="Cocina a la medida" class="w-full h-full object-cover transition-transform duration-500">
+                            <div class="absolute inset-0 bg-black bg-opacity-25 group-hover:bg-opacity-10 transition-all"></div>
+                            <span class="absolute top-4 right-4 bg-madera-oscura/90 text-white text-xs font-semibold px-3 py-1 rounded-full backdrop-blur-sm">8 Modelos</span>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-serif font-bold text-madera-oscura mb-2 group-hover:text-madera-media transition-colors">Cocinas Integrales</h3>
+                            <p class="text-sm text-gray-600">Islas centrales, alacenas superiores y cocinas modernas o clásicas diseñadas a la medida.</p>
+                        </div>
+                    </div>
+                    <div class="px-6 pb-6 pt-0 text-right">
+                        <span class="text-xs font-bold text-madera-media tracking-wider uppercase inline-flex items-center gap-1 group-hover:translate-x-1 transition-transform">Explorar Categoría &rarr;</span>
+                    </div>
+                </div>
+
+                <!-- Tarjeta Clósets -->
+                <div onclick="openCategoryModal('closets')" class="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 card-zoom cursor-pointer group flex flex-col justify-between border border-gray-100">
+                    <div>
+                        <div class="h-64 overflow-hidden relative">
+                            <img src="https://www.elmueble.com/medio/2021/04/14/00490845_0aaeb1e0_2000x1196.jpg" alt="Clóset a la medida" class="w-full h-full object-cover transition-transform duration-500">
+                            <div class="absolute inset-0 bg-black bg-opacity-25 group-hover:bg-opacity-10 transition-all"></div>
+                            <span class="absolute top-4 right-4 bg-madera-oscura/90 text-white text-xs font-semibold px-3 py-1 rounded-full backdrop-blur-sm">8 Modelos</span>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-serif font-bold text-madera-oscura mb-2 group-hover:text-madera-media transition-colors">Clósets y Vestidores</h3>
+                            <p class="text-sm text-gray-600">Vestidores abiertos, armarios empotrados y sistemas modulares con acabados finos.</p>
+                        </div>
+                    </div>
+                    <div class="px-6 pb-6 pt-0 text-right">
+                        <span class="text-xs font-bold text-madera-media tracking-wider uppercase inline-flex items-center gap-1 group-hover:translate-x-1 transition-transform">Explorar Categoría &rarr;</span>
+                    </div>
+                </div>
+
+                <!-- Tarjeta Salas -->
+                <div onclick="openCategoryModal('salas')" class="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 card-zoom cursor-pointer group flex flex-col justify-between border border-gray-100">
+                    <div>
+                        <div class="h-64 overflow-hidden relative">
+                            <img src="https://oechsle.vteximg.com.br/arquivos/ids/18161186-800-800/2597445_1.jpg?v=638536518720500000" alt="Mueble de TV y Sala" class="w-full h-full object-cover transition-transform duration-500">
+                            <div class="absolute inset-0 bg-black bg-opacity-25 group-hover:bg-opacity-10 transition-all"></div>
+                            <span class="absolute top-4 right-4 bg-madera-oscura/90 text-white text-xs font-semibold px-3 py-1 rounded-full backdrop-blur-sm">8 Modelos</span>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-serif font-bold text-madera-oscura mb-2 group-hover:text-madera-media transition-colors">Centros de Entretenimiento</h3>
+                            <p class="text-sm text-gray-600">Paneles flotantes, lambrines, repisas y consolas para pantallas y salas de estar.</p>
+                        </div>
+                    </div>
+                    <div class="px-6 pb-6 pt-0 text-right">
+                        <span class="text-xs font-bold text-madera-media tracking-wider uppercase inline-flex items-center gap-1 group-hover:translate-x-1 transition-transform">Explorar Categoría &rarr;</span>
+                    </div>
+                </div>
+
+                <!-- Tarjeta Comedores -->
+                <div onclick="openCategoryModal('comedores')" class="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 card-zoom cursor-pointer group flex flex-col justify-between border border-gray-100">
+                    <div>
+                        <div class="h-64 overflow-hidden relative">
+                            <img src="https://www.elmueble.com/medio/2020/10/07/00517094_d4158770_1200x1500.jpg" alt="Comedor de madera" class="w-full h-full object-cover transition-transform duration-500">
+                            <div class="absolute inset-0 bg-black bg-opacity-25 group-hover:bg-opacity-10 transition-all"></div>
+                            <span class="absolute top-4 right-4 bg-madera-oscura/90 text-white text-xs font-semibold px-3 py-1 rounded-full backdrop-blur-sm">8 Modelos</span>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-serif font-bold text-madera-oscura mb-2 group-hover:text-madera-media transition-colors">Comedores y Mesas</h3>
+                            <p class="text-sm text-gray-600">Mesas robustas cuadradas, rectangulares y redondas con sillas artesanales a juego.</p>
+                        </div>
+                    </div>
+                    <div class="px-6 pb-6 pt-0 text-right">
+                        <span class="text-xs font-bold text-madera-media tracking-wider uppercase inline-flex items-center gap-1 group-hover:translate-x-1 transition-transform">Explorar Categoría &rarr;</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-12 text-center">
+                <p class="text-sm text-gray-500 italic">* Las imágenes son muestras de nuestro trabajo. Todo mueble se cotiza y fabrica de manera presencial según medidas y disponibilidad.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modal 1: Galería de la Categoría Seleccionada -->
+    <div id="category-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 sm:p-6 md:p-8">
+        <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" onclick="closeCategoryModal()"></div>
+
+        <div class="relative bg-white w-full max-w-6xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[92vh] z-10">
+            <div class="bg-madera-oscura text-white px-6 py-5 flex items-center justify-between border-b border-madera-media flex-shrink-0">
+                <div>
+                    <h3 id="category-modal-title" class="font-serif font-bold text-2xl text-madera-clara">Detalle de Categoría</h3>
+                    <p class="text-xs text-gray-300 mt-0.5">Seleccione un mueble para ampliar la imagen y elegir un tono de referencia</p>
+                </div>
+                <button onclick="closeCategoryModal()" class="text-madera-clara hover:text-white p-2 rounded-lg hover:bg-white/10 transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+
+            <div class="p-6 md:p-8 overflow-y-auto custom-scrollbar bg-gray-50 flex-1">
+                <div id="category-items-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"></div>
+            </div>
+
+            <div class="bg-white border-t border-gray-200 px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-3 flex-shrink-0">
+                <span class="text-xs text-gray-500">Haga clic en una tarjeta para ver en detalle y cargar el modelo en el formulario.</span>
+                <button onclick="closeCategoryModal()" class="px-5 py-2.5 bg-gray-200 hover:bg-gray-300 text-madera-texto font-medium text-sm rounded-lg transition-colors w-full sm:w-auto">
+                    Cerrar Categoría
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal 2: Ventana de Mueble en Grande -->
+    <div id="product-detail-modal" class="fixed inset-0 z-[60] hidden items-center justify-center p-4 sm:p-6">
+        <div class="absolute inset-0 bg-black/80 backdrop-blur-md" onclick="closeProductDetailModal()"></div>
+
+        <div class="relative bg-white w-full max-w-4xl rounded-2xl shadow-2xl overflow-hidden flex flex-col md:flex-row max-h-[90vh] z-10">
+            <button onclick="closeProductDetailModal()" class="absolute top-4 right-4 z-20 bg-black/50 text-white hover:bg-black/80 p-2 rounded-full backdrop-blur-sm transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+
+            <div class="w-full md:w-3/5 bg-black flex items-center justify-center relative min-h-[280px] md:min-h-[420px]">
+                <img id="detail-image" src="" alt="Mueble ampliado" class="w-full h-full object-cover max-h-[500px]">
+                <div class="absolute bottom-3 left-3 bg-black/60 backdrop-blur-sm px-3 py-1 rounded text-white text-xs">
+                    * Vista de referencia
+                </div>
+            </div>
+
+            <div class="w-full md:w-2/5 p-6 md:p-8 flex flex-col justify-between bg-white overflow-y-auto custom-scrollbar">
+                <div>
+                    <span id="detail-category-badge" class="text-xs font-semibold uppercase tracking-wider text-madera-media">Categoría</span>
+                    <h3 id="detail-title" class="font-serif font-bold text-2xl text-madera-oscura mt-1 mb-3">Nombre del Mueble</h3>
+                    <p id="detail-description" class="text-sm text-gray-600 leading-relaxed mb-6">Descripción detallada del mueble.</p>
+
+                    <div class="border-t border-b border-gray-100 py-4 mb-6">
+                        <label class="block text-xs font-bold uppercase tracking-wider text-madera-oscura mb-2">
+                            Tono de Referencia: <span id="selected-color-name" class="font-normal text-madera-media">Encino Natural</span>
+                        </label>
+                        <p class="text-xs text-gray-500 mb-3">Seleccione el tono que desea registrar como referencia:</p>
+                        <div id="color-swatches" class="flex flex-wrap gap-3"></div>
+                    </div>
+                </div>
+
+                <div class="space-y-3">
+                    <button id="btn-quote-item" onclick="quoteCurrentDetailProduct()" class="w-full py-3 px-4 bg-madera-media hover:bg-madera-oscura text-white font-medium text-sm rounded-lg shadow-md transition-colors flex items-center justify-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                        </svg>
+                        Seleccionar en Formulario
+                    </button>
+                    <button onclick="closeProductDetailModal()" class="w-full py-2 px-4 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs rounded-lg transition-colors">
+                        Volver a la Galería
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. Sección de Políticas Comerciales -->
+    <section id="politicas" class="py-20 bg-madera-clara relative">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="bg-white rounded-2xl shadow-xl overflow-hidden">
+                <div class="bg-madera-oscura px-8 py-6 border-b border-madera-media">
+                    <h2 class="text-2xl md:text-3xl font-serif font-bold text-white flex items-center gap-3">
+                        <svg class="w-8 h-8 text-madera-media" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                        </svg>
+                        Políticas de Trabajo y Contratación
+                    </h2>
+                </div>
+                <div class="p-8 md:p-12">
+                    <p class="text-gray-700 mb-8 leading-relaxed">
+                        En <strong>Kardex Mueblería</strong> trabajamos bajo fabricación personalizada sobre pedido. No realizamos ventas en línea ni manejamos inventarios automatizados. Toda cotización formal, cierre de venta y cobro se realiza de manera <strong>100% presencial</strong> en nuestra oficina/taller en Chihuahua, Chih.:
+                    </p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="flex items-start gap-4">
+                            <div class="flex-shrink-0 mt-1 bg-madera-clara p-2 rounded-full text-madera-oscura">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-madera-texto text-lg">Anticipo del 50% Obligatorio</h4>
+                                <p class="text-sm text-gray-600 mt-1">Para iniciar la fabricación de cualquier mueble es obligatorio cubrir el 50% de anticipo.</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-4">
+                            <div class="flex-shrink-0 mt-1 bg-madera-clara p-2 rounded-full text-madera-oscura">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-madera-texto text-lg">Plazo de Liquidación (3 a 4 Meses)</h4>
+                                <p class="text-sm text-gray-600 mt-1">El cliente cuenta con un plazo máximo de <strong>3 a 4 meses</strong> para liquidar el 50% restante.</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-4">
+                            <div class="flex-shrink-0 mt-1 bg-madera-clara p-2 rounded-full text-madera-oscura">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-madera-texto text-lg">Efectivo o Transferencia Bancaria Directa</h4>
+                                <p class="text-sm text-gray-600 mt-1">Pagos únicamente en <strong>efectivo</strong> o <strong>transferencia bancaria directa</strong>. No se aceptan tarjetas de crédito.</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-4">
+                            <div class="flex-shrink-0 mt-1 bg-madera-clara p-2 rounded-full text-madera-oscura">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-madera-texto text-lg">Atención 100% Presencial</h4>
+                                <p class="text-sm text-gray-600 mt-1">Las cotizaciones finales, cierres de venta y cobros se realizan en nuestra oficina/taller en Chihuahua.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5. Formulario Estructurado de Solicitud de Cotización (Registro en Base de Datos / Hoja) -->
+    <section id="contacto" class="py-20 bg-white">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-serif font-bold text-madera-oscura mb-4">Registro de Solicitud de Cotización</h2>
+                <p class="text-gray-600">Seleccione el tipo de mueble y el material de su interés. Su solicitud quedará registrada para seguimiento presencial en oficina.</p>
+            </div>
+
+            <div class="bg-white border border-gray-100 rounded-2xl shadow-xl p-8 md:p-10">
+                <form id="contactForm" class="space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="nombre" class="block text-sm font-medium text-gray-700 mb-1">Nombre Completo *</label>
+                            <input type="text" id="nombre" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-madera-media focus:border-transparent transition bg-gray-50 focus:bg-white" placeholder="Ej. Juan Pérez">
+                        </div>
+                        <div>
+                            <label for="telefono" class="block text-sm font-medium text-gray-700 mb-1">Teléfono (Celular) *</label>
+                            <input type="tel" id="telefono" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-madera-media focus:border-transparent transition bg-gray-50 focus:bg-white" placeholder="Ej. 614 123 4567">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="correo" class="block text-sm font-medium text-gray-700 mb-1">Correo Electrónico (Opcional)</label>
+                            <input type="email" id="correo" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-madera-media focus:border-transparent transition bg-gray-50 focus:bg-white" placeholder="correo@ejemplo.com">
+                        </div>
+
+                        <div>
+                            <label for="tipoMueble" class="block text-sm font-medium text-gray-700 mb-1">Tipo de Mueble *</label>
+                            <select id="tipoMueble" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-madera-media focus:border-transparent transition bg-gray-50 focus:bg-white">
+                                <option value="" selected disabled>Selecciona un tipo de mueble...</option>
+                                <option value="Cocina Integral">Cocina Integral</option>
+                                <option value="Clóset / Vestidor">Clóset / Vestidor</option>
+                                <option value="Sala / Centro de Entretenimiento">Sala / Centro de Entretenimiento</option>
+                                <option value="Comedor / Mesa">Comedor / Mesa</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="modeloReferencia" class="block text-sm font-medium text-gray-700 mb-1">Modelo de Referencia (Opcional)</label>
+                            <select id="modeloReferencia" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-madera-media focus:border-transparent transition bg-gray-50 focus:bg-white">
+                                <option value="Sin modelo específico">Sin modelo específico</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label for="material" class="block text-sm font-medium text-gray-700 mb-1">Material / Tono Preestablecido *</label>
+                            <select id="material" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-madera-media focus:border-transparent transition bg-gray-50 focus:bg-white">
+                                <option value="" selected disabled>Selecciona material o tono...</option>
+                                <option value="Encino Natural">Encino Natural</option>
+                                <option value="Nogal Oscuro">Nogal Oscuro</option>
+                                <option value="Caoba Clásica">Caoba Clásica</option>
+                                <option value="Cedro Tostado">Cedro Tostado</option>
+                                <option value="Pino Escandinavo">Pino Escandinavo</option>
+                                <option value="Gris Ahumado">Gris Ahumado</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="aclaraciones" class="block text-sm font-medium text-gray-700 mb-1">Aclaraciones adicionales (Opcional)</label>
+                        <textarea id="aclaraciones" rows="3" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-madera-media focus:border-transparent transition bg-gray-50 focus:bg-white resize-none" placeholder="Ej. Medidas aproximadas, horario sugerido para acudir a oficina o alguna aclaración puntual..."></textarea>
+                    </div>
+                    
+                    <div class="bg-gray-50 p-4 rounded-lg text-xs text-gray-500 flex items-start gap-2">
+                        <svg class="w-5 h-5 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <p>Su solicitud se registrará en nuestra hoja de control de prospectos. Las cotizaciones finales, anticipo del 50%, plazo de liquidación de 3 a 4 meses y pagos (efectivo o transferencia bancaria directa) son 100% presenciales.</p>
+                    </div>
+
+                    <div>
+                        <button type="submit" id="btn-submit-form" class="w-full flex justify-center items-center gap-3 py-4 px-4 border border-transparent rounded-lg shadow-sm text-lg font-medium text-white bg-madera-oscura hover:bg-madera-media focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-madera-media transition-colors duration-200">
+                            Registrar Solicitud de Cotización
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer Simple -->
+    <footer class="bg-madera-texto text-gray-300 py-12 border-t border-[#3c2a1e]">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                    <h3 class="font-serif font-bold text-xl text-white mb-4">Kardex Mueblería</h3>
+                    <p class="text-sm leading-relaxed">Diseño y fabricación de muebles de madera a la medida. Calidad artesanal para hogares en Chihuahua.</p>
+                </div>
+                <div>
+                    <h3 class="font-bold text-white mb-4">Ubicación y Horarios</h3>
+                    <p class="text-sm">Chihuahua, Chih., México.<br>
+                    Lunes a Viernes: 9:00 AM - 6:00 PM<br>
+                    Sábados: 9:00 AM - 2:00 PM</p>
+                </div>
+                <div>
+                    <h3 class="font-bold text-white mb-4">Aviso Importante</h3>
+                    <p class="text-sm">Catálogo informativo. No realizamos ventas en línea. Cotizaciones, cierres y pagos (50% anticipo, saldo 3 a 4 meses, efectivo o transferencia bancaria directa) son 100% presenciales.</p>
+                </div>
+            </div>
+            <div class="border-t border-[#4a3424] mt-8 pt-8 text-center text-sm">
+                <p>&copy; 2026 Kardex Mueblería. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Botón Flotante WhatsApp (Único enlace directo a WhatsApp) -->
+    <a href="https://wa.me/529182235998?text=Hola%20Kardex%20Muebler%C3%ADa,%20vengo%20de%20su%20p%C3%A1gina%20web%20y%20me%20gustar%C3%ADa%20enviar%20un%20mensaje%20directo." 
+       target="_blank" 
+       rel="noopener noreferrer"
+       class="fixed bottom-6 right-6 bg-[#25D366] text-white p-4 rounded-full shadow-2xl hover:bg-[#128C7E] hover:scale-110 transition-all duration-300 z-40 flex items-center justify-center group"
+       aria-label="Contactar por WhatsApp">
+        <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.614-.087-.112-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86s.274.072.376-.043c.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.099.824zm-3.423-14.416c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm.082 21.319c-1.488 0-2.946-.381-4.229-1.101l-4.707 1.236 1.258-4.595c-.792-1.328-1.21-2.862-1.21-4.445 0-5.457 4.44-9.897 9.897-9.897 5.457 0 9.898 4.44 9.898 9.897 0 5.458-4.441 9.897-9.897 9.897l-.01-.002z"/>
+        </svg>
+        <span class="absolute right-16 bg-gray-900 text-white text-xs font-semibold px-3 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+            Mensaje directo
+        </span>
+    </a>
+
+    <!-- Modal de Confirmación -->
+    <div id="custom-modal" class="fixed inset-0 z-[100] hidden items-center justify-center">
+        <div class="absolute inset-0 bg-black bg-opacity-60 backdrop-blur-sm" id="modal-overlay"></div>
+        <div class="relative bg-white rounded-2xl shadow-2xl p-8 max-w-sm w-full mx-4">
+            <div class="text-center">
+                <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mb-4">
+                    <svg class="h-6 w-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                </div>
+                <h3 class="text-lg leading-6 font-medium text-madera-oscura font-serif mb-2" id="modal-title">Solicitud Registrada</h3>
+                <div class="mt-2">
+                    <p class="text-sm text-gray-500" id="modal-message">Su solicitud quedó registrada. La cotización formal, anticipo del 50% y pagos (3 a 4 meses en efectivo o transferencia bancaria directa) se realizan de manera presencial.</p>
+                </div>
+                <div class="mt-6">
+                    <button type="button" id="close-modal-btn" class="w-full inline-flex justify-center rounded-lg border border-transparent shadow-sm px-4 py-2 bg-madera-media text-base font-medium text-white hover:bg-madera-oscura transition-colors">
+                        Entendido
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts de Interacción y Datos del Catálogo -->
+    <script>
+        // Pega aquí la URL de implementación de Google Apps Script (Web App)
+        const GOOGLE_SHEETS_WEBAPP_URL = "PEGA_AQUI_TU_URL_DE_GOOGLE_APPS_SCRIPT";
+
+        const maderaColores = [
+            { nombre: "Encino Natural", hex: "#D2B48C" },
+            { nombre: "Nogal Oscuro", hex: "#4A2E1B" },
+            { nombre: "Caoba Clásica", hex: "#6A2B28" },
+            { nombre: "Cedro Tostado", hex: "#8B5A2B" },
+            { nombre: "Pino Escandinavo", hex: "#EEDC82" },
+            { nombre: "Gris Ahumado", hex: "#708090" }
+        ];
+
+        const catalogData = {
+            cocinas: {
+                title: "Cocinas Integrales a la Medida",
+                badge: "Cocinas Integrales",
+                formTipo: "Cocina Integral",
+                items: [
+                    { nombre: "Cocina Isla Encino Natural", imagen: "https://images.unsplash.com/photo-1556909211-36987daf7b4d?auto=format&fit=crop&q=80&w=1000", descripcion: "Isla central espaciosa con cajoneras de cierre suave, alacenas superiores al techo y repisas integradas.", colores: [maderaColores[0], maderaColores[1], maderaColores[4]] },
+                    { nombre: "Cocina Clásica Nogal y Mármol", imagen: "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&q=80&w=1000", descripcion: "Estructura tradicional en madera maciza con molduras talladas a mano y acabado en poliuretano mate.", colores: [maderaColores[1], maderaColores[2], maderaColores[3]] },
+                    { nombre: "Cocina Minimalista Pino Blanco", imagen: "https://images.unsplash.com/photo-1507089947368-19c1da9775ae?auto=format&fit=crop&q=80&w=1000", descripcion: "Líneas rectas horizontales, jaladeras ocultas tipo tirador y nicho para microondas y horno empotrado.", colores: [maderaColores[4], maderaColores[0], maderaColores[5]] },
+                    { nombre: "Cocina L-Shape Caoba Imperial", imagen: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&q=80&w=1000", descripcion: "Distribución en L optimizada para esquinas con especiero extraíble y cava para botellas de vino.", colores: [maderaColores[2], maderaColores[1], maderaColores[3]] },
+                    { nombre: "Cocina Rústica Cedro de Sierra", imagen: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&q=80&w=1000", descripcion: "Vetas marcadas con textura artesanal al tacto, repisas gruesas suspendidas y marcos tradicionales.", colores: [maderaColores[3], maderaColores[0], maderaColores[1]] },
+                    { nombre: "Cocina Moderna Gris Ahumado", imagen: "https://images.unsplash.com/photo-1565538810643-b5bdb714032a?auto=format&fit=crop&q=80&w=1000", descripcion: "Combinación de madera entintada en tono gris mate con acentos de alacena en pino claro.", colores: [maderaColores[5], maderaColores[0], maderaColores[4]] },
+                    { nombre: "Cocina Abierta Roble Industrial", imagen: "https://images.unsplash.com/photo-1507652313519-d4e9174996dd?auto=format&fit=crop&q=80&w=1000", descripcion: "Diseño urbano para loft con despensa alta vertical y barras desayunadoras en bloques sólidos.", colores: [maderaColores[0], maderaColores[1], maderaColores[5]] },
+                    { nombre: "Cocina Ebanista Fresno Premium", imagen: "https://images.unsplash.com/photo-1528698827591-e19ccd7bc23d?auto=format&fit=crop&q=80&w=1000", descripcion: "Fabricación gourmet con iluminación LED empotrada bajo gabinetes y cajones organizadores de utensilios.", colores: [maderaColores[0], maderaColores[2], maderaColores[4]] }
+                ]
+            },
+            closets: {
+                title: "Clósets y Vestidores Personalizados",
+                badge: "Clósets y Vestidores",
+                formTipo: "Clóset / Vestidor",
+                items: [
+                    { nombre: "Vestidor Abierto Roble Claro", imagen: "https://www.elmueble.com/medio/2021/04/14/00490845_0aaeb1e0_2000x1196.jpg", descripcion: "Vestidor tipo Walk-in con zapateras inclinadas extraíbles, maleteros dobles y tubos colgadores de aluminio.", colores: [maderaColores[0], maderaColores[4], maderaColores[5]] },
+                    { nombre: "Clóset Empotrado con Luna Caoba", imagen: "https://images.unsplash.com/photo-1558882224-dda166733046?auto=format&fit=crop&q=80&w=1000", descripcion: "Armario de pared a pared con espejos centrales rectangulares y cajonera interior de 6 compartimentos.", colores: [maderaColores[2], maderaColores[1], maderaColores[3]] },
+                    { nombre: "Vestidor en Esquina Nogal Americano", imagen: "https://images.unsplash.com/photo-1616046229478-9901c5536a45?auto=format&fit=crop&q=80&w=1000", descripcion: "Aprovechamiento total de ángulos muertos con rinconeras giratorias y módulo organizador de corbatas.", colores: [maderaColores[1], maderaColores[0], maderaColores[2]] },
+                    { nombre: "Clóset Corredizo Fresno Veteado", imagen: "https://images.unsplash.com/photo-1595428774223-ef52624120d2?auto=format&fit=crop&q=80&w=1000", descripcion: "Puertas correderas con sistema riel ultrasilencioso y compartimentos superiores para cobijas.", colores: [maderaColores[0], maderaColores[5], maderaColores[4]] },
+                    { nombre: "Armario Clásico Cedro Olmo", imagen: "https://images.unsplash.com/photo-1540518614846-7eded433c457?auto=format&fit=crop&q=80&w=1000", descripcion: "Mueble exento de 4 puertas abatibles con chapa de madera fina y olor natural a cedro protector.", colores: [maderaColores[3], maderaColores[2], maderaColores[1]] },
+                    { nombre: "Isla Central para Vestidor de Lujo", imagen: "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&q=80&w=1000", descripcion: "Mueble cajonero central para joyería y accesorios con cubierta superior de cristal templado.", colores: [maderaColores[1], maderaColores[0], maderaColores[2]] },
+                    { nombre: "Clóset Juvenil Pino Escandinavo", imagen: "https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?auto=format&fit=crop&q=80&w=1000", descripcion: "Diseño fresco con módulos abiertos intercambiables y estantes regulables en altura.", colores: [maderaColores[4], maderaColores[0], maderaColores[5]] },
+                    { nombre: "Vestidor Modular Gris Ahumado", imagen: "https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&q=80&w=1000", descripcion: "Acabado contemporáneo mate con iluminación en tiras LED cálidas integradas en cada entrepaño.", colores: [maderaColores[5], maderaColores[1], maderaColores[0]] }
+                ]
+            },
+            salas: {
+                title: "Centros de Entretenimiento y Salas",
+                badge: "Salas y TV",
+                formTipo: "Sala / Centro de Entretenimiento",
+                items: [
+                    { nombre: "Panel Flotante Lambrin Encino", imagen: "https://oechsle.vteximg.com.br/arquivos/ids/18161186-800-800/2597445_1.jpg?v=638536518720500000", descripcion: "Pared decorativa en listones verticales de madera con consola inferior suspendida para aparatos.", colores: [maderaColores[0], maderaColores[1], maderaColores[3]] },
+                    { nombre: "Mueble TV Consola Nogal", imagen: "https://images.unsplash.com/photo-1595428774223-ef52624120d2?auto=format&fit=crop&q=80&w=1000", descripcion: "Buffet bajo para pantallas de hasta 75 pulgadas con puertas de malla artesanal y gestión de cables.", colores: [maderaColores[1], maderaColores[2], maderaColores[0]] },
+                    { nombre: "Librero Modular Caoba & Cristal", imagen: "https://images.unsplash.com/photo-1541123437800-1bb1317badc2?auto=format&fit=crop&q=80&w=1000", descripcion: "Estantería de piso a techo con nichos iluminados y repisas reforzadas para libros pesados.", colores: [maderaColores[2], maderaColores[3], maderaColores[1]] },
+                    { nombre: "Mesa de Centro Sólida Cedro", imagen: "https://images.unsplash.com/photo-1533090161767-e6ffed986c88?auto=format&fit=crop&q=80&w=1000", descripcion: "Mesa baja en corte de tronco natural pulido y sellado con base geométrica de soporte.", colores: [maderaColores[3], maderaColores[0], maderaColores[1]] },
+                    { nombre: "Credenza de Sala Roble Oscuro", imagen: "https://images.unsplash.com/photo-1538688525198-9b88f6f53126?auto=format&fit=crop&q=80&w=1000", descripcion: "Mueble auxiliar con 4 cajones profundos y puertas laterales para vajillas o mantelería.", colores: [maderaColores[1], maderaColores[2], maderaColores[5]] },
+                    { nombre: "Centro TV con Chimenea Integrada", imagen: "https://images.unsplash.com/photo-1600585152220-90363fe7e115?auto=format&fit=crop&q=80&w=1000", descripcion: "Mueble integral con nicho para chimenea ecológica de bioetanol o eléctrica decorativa.", colores: [maderaColores[0], maderaColores[1], maderaColores[4]] },
+                    { nombre: "Panel de Pared TV Fresno Ceniza", imagen: "https://images.unsplash.com/photo-1618219908412-a29a1bb7b86e?auto=format&fit=crop&q=80&w=1000", descripcion: "Estructura limpia e imponente para ocultar cables de consolas, sonido y conectividad.", colores: [maderaColores[5], maderaColores[0], maderaColores[4]] },
+                    { nombre: "Librero de Esquina Pino Escandinavo", imagen: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&q=80&w=1000", descripcion: "Mueble ligero escalonado ideal para exhibir plantas de interior, esculturas y recuerdos.", colores: [maderaColores[4], maderaColores[0], maderaColores[3]] }
+                ]
+            },
+            comedores: {
+                title: "Comedores y Mesas Ebanistería Fina",
+                badge: "Comedores y Mesas",
+                formTipo: "Comedor / Mesa",
+                items: [
+                    { nombre: "Comedor Sólido 8 Personas Pino", imagen: "https://www.elmueble.com/medio/2020/10/07/00517094_d4158770_1200x1500.jpg", descripcion: "Mesa robusta de cubierta gruesa con 8 sillas ergonómicas tapizadas en tela repelente a líquidos.", colores: [maderaColores[0], maderaColores[3], maderaColores[1]] },
+                    { nombre: "Mesa Redonda 6 Sillas Nogal", imagen: "https://images.unsplash.com/photo-1615066390971-03e4e1c36ddf?auto=format&fit=crop&q=80&w=1000", descripcion: "Diseño acogedor con base central en estrella que maximiza el espacio libre para las piernas.", colores: [maderaColores[1], maderaColores[2], maderaColores[0]] },
+                    { nombre: "Comedor Imperial 10 Sillas Caoba", imagen: "https://images.unsplash.com/photo-1617806118233-18e1de247200?auto=format&fit=crop&q=80&w=1000", descripcion: "Mesa extensible de gran dimensión con cabeceras de sillón ebanista y acabados clásicos.", colores: [maderaColores[2], maderaColores[1], maderaColores[3]] },
+                    { nombre: "Comedor Escandinavo 4 Sillas Encino", imagen: "https://images.unsplash.com/photo-1530018607912-eff2daa1bac4?auto=format&fit=crop&q=80&w=1000", descripcion: "Set compacto ideal para departamentos o desayunadores con sillas estilo nórdico.", colores: [maderaColores[4], maderaColores[0], maderaColores[5]] },
+                    { nombre: "Mesa Ebanista Rectangular Cedro", imagen: "https://images.unsplash.com/photo-1577140917170-285929fb55b7?auto=format&fit=crop&q=80&w=1000", descripcion: "Cubierta en una sola pieza con bisel perimetral y patas cónicas reforzadas en ensamble espiga.", colores: [maderaColores[3], maderaColores[0], maderaColores[2]] },
+                    { nombre: "Buffetero de Comedor Roble Ahumado", imagen: "https://images.unsplash.com/photo-1595428774223-ef52624120d2?auto=format&fit=crop&q=80&w=1000", descripcion: "Credenza complementaria para guardar loza, manteles y cubiertos finos a juego con la mesa.", colores: [maderaColores[1], maderaColores[5], maderaColores[0]] },
+                    { nombre: "Comedor Rústico 6 Personas Pino Sierra", imagen: "https://images.unsplash.com/photo-1544457070-4cd773b4d71e?auto=format&fit=crop&q=80&w=1000", descripcion: "Mesa al estilo hacienda mexicana con banca corrida lateral y sillas individuales.", colores: [maderaColores[0], maderaColores[3], maderaColores[1]] },
+                    { nombre: "Mesa Cuadrada 8 Personas Gris Ahumado", imagen: "https://images.unsplash.com/photo-1567016432779-094069958ea5?auto=format&fit=crop&q=80&w=1000", descripcion: "Formato cuadrado moderno que propicia la conversación entre todos los comensales.", colores: [maderaColores[5], maderaColores[1], maderaColores[4]] }
+                ]
+            }
+        };
+
+        let currentCategoryKey = '';
+        let currentItemIndex = 0;
+        let selectedColor = null;
+
+        function populateModeloSelect(tipoSeleccionado = '', modeloPreseleccionado = '') {
+            const modeloSelect = document.getElementById('modeloReferencia');
+            modeloSelect.innerHTML = '<option value="Sin modelo específico">Sin modelo específico</option>';
+
+            const mapaTipos = {
+                "Cocina Integral": "cocinas",
+                "Clóset / Vestidor": "closets",
+                "Sala / Centro de Entretenimiento": "salas",
+                "Comedor / Mesa": "comedores"
+            };
+
+            const key = mapaTipos[tipoSeleccionado];
+            if (key && catalogData[key]) {
+                catalogData[key].items.forEach(item => {
+                    const opt = document.createElement('option');
+                    opt.value = item.nombre;
+                    opt.textContent = item.nombre;
+                    if (item.nombre === modeloPreseleccionado) {
+                        opt.selected = true;
+                    }
+                    modeloSelect.appendChild(opt);
+                });
+            }
+        }
+
+        function openCategoryModal(categoryKey) {
+            currentCategoryKey = categoryKey;
+            const data = catalogData[categoryKey];
+            if (!data) return;
+
+            document.getElementById('category-modal-title').textContent = data.title;
+            const container = document.getElementById('category-items-container');
+            container.innerHTML = '';
+
+            data.items.forEach((item, index) => {
+                const itemCard = `
+                    <div onclick="openProductDetail('${categoryKey}', ${index})" class="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 border border-gray-200 flex flex-col justify-between cursor-pointer group">
+                        <div>
+                            <div class="h-44 overflow-hidden relative">
+                                <img src="${item.imagen}" alt="${item.nombre}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                                <span class="absolute top-2 right-2 bg-black/60 text-white text-[10px] font-semibold px-2 py-0.5 rounded backdrop-blur-sm">
+                                    Haz clic para ampliar
+                                </span>
+                            </div>
+                            <div class="p-4">
+                                <h4 class="font-serif font-bold text-base text-madera-oscura group-hover:text-madera-media transition-colors mb-1">${item.nombre}</h4>
+                                <p class="text-xs text-gray-600 line-clamp-2">${item.descripcion}</p>
+                            </div>
+                        </div>
+                        <div class="p-4 pt-0 text-right">
+                            <span class="text-[11px] font-bold text-madera-media tracking-wide uppercase inline-flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+                                Ampliar & Tonos &rarr;
+                            </span>
+                        </div>
+                    </div>
+                `;
+                container.innerHTML += itemCard;
+            });
+
+            const modal = document.getElementById('category-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeCategoryModal() {
+            const modal = document.getElementById('category-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            document.body.style.overflow = '';
+        }
+
+        function openProductDetail(categoryKey, index) {
+            currentCategoryKey = categoryKey;
+            currentItemIndex = index;
+            const item = catalogData[categoryKey].items[index];
+
+            document.getElementById('detail-category-badge').textContent = catalogData[categoryKey].badge;
+            document.getElementById('detail-title').textContent = item.nombre;
+            document.getElementById('detail-description').textContent = item.descripcion;
+            document.getElementById('detail-image').src = item.imagen;
+
+            const colorsContainer = document.getElementById('color-swatches');
+            colorsContainer.innerHTML = '';
+            
+            selectedColor = item.colores[0];
+            document.getElementById('selected-color-name').textContent = selectedColor.nombre;
+
+            item.colores.forEach((color, idx) => {
+                const isActive = idx === 0;
+                const swatch = document.createElement('button');
+                swatch.type = 'button';
+                swatch.className = `w-8 h-8 rounded-full border-2 transition-transform transform hover:scale-110 flex items-center justify-center ${isActive ? 'ring-2 ring-madera-media ring-offset-2 border-white scale-110' : 'border-gray-300'}`;
+                swatch.style.backgroundColor = color.hex;
+                swatch.title = color.nombre;
+
+                swatch.onclick = () => {
+                    Array.from(colorsContainer.children).forEach(child => {
+                        child.classList.remove('ring-2', 'ring-madera-media', 'ring-offset-2', 'border-white', 'scale-110');
+                        child.classList.add('border-gray-300');
+                    });
+                    swatch.classList.add('ring-2', 'ring-madera-media', 'ring-offset-2', 'border-white', 'scale-110');
+                    swatch.classList.remove('border-gray-300');
+
+                    selectedColor = color;
+                    document.getElementById('selected-color-name').textContent = color.nombre;
+                };
+
+                colorsContainer.appendChild(swatch);
+            });
+
+            const detailModal = document.getElementById('product-detail-modal');
+            detailModal.classList.remove('hidden');
+            detailModal.classList.add('flex');
+        }
+
+        function closeProductDetailModal() {
+            const detailModal = document.getElementById('product-detail-modal');
+            detailModal.classList.add('hidden');
+            detailModal.classList.remove('flex');
+        }
+
+        function quoteCurrentDetailProduct() {
+            const catData = catalogData[currentCategoryKey];
+            const item = catData.items[currentItemIndex];
+            const colorName = selectedColor ? selectedColor.nombre : "";
+
+            closeProductDetailModal();
+            closeCategoryModal();
+
+            const tipoSelect = document.getElementById('tipoMueble');
+            tipoSelect.value = catData.formTipo;
+            populateModeloSelect(catData.formTipo, item.nombre);
+
+            if (colorName) {
+                const matSelect = document.getElementById('material');
+                const existe = Array.from(matSelect.options).some(o => o.value === colorName);
+                if (existe) matSelect.value = colorName;
+            }
+
+            const contactoSection = document.getElementById('contacto');
+            contactoSection.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const btn = document.getElementById('mobile-menu-btn');
+            const menu = document.getElementById('mobile-menu');
+            const menuLinks = menu.querySelectorAll('a');
+
+            btn.addEventListener('click', () => menu.classList.toggle('hidden'));
+            menuLinks.forEach(link => link.addEventListener('click', () => menu.classList.add('hidden')));
+
+            document.getElementById('tipoMueble').addEventListener('change', (e) => {
+                populateModeloSelect(e.target.value);
+            });
+
+            const form = document.getElementById('contactForm');
+            const submitBtn = document.getElementById('btn-submit-form');
+            const modal = document.getElementById('custom-modal');
+            const modalTitle = document.getElementById('modal-title');
+            const modalMessage = document.getElementById('modal-message');
+            const closeModalBtn = document.getElementById('close-modal-btn');
+            const modalOverlay = document.getElementById('modal-overlay');
+
+            const showModal = (titulo, mensaje) => {
+                modalTitle.textContent = titulo;
+                modalMessage.textContent = mensaje;
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            };
+
+            const hideModal = () => {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            };
+
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+
+                if (!GOOGLE_SHEETS_WEBAPP_URL || GOOGLE_SHEETS_WEBAPP_URL.includes("PEGA_AQUI")) {
+                    showModal(
+                        "Configuración pendiente",
+                        "Falta configurar la URL de Google Apps Script en el código para guardar las solicitudes en la hoja."
+                    );
+                    return;
+                }
+
+                submitBtn.disabled = true;
+                submitBtn.textContent = "Registrando solicitud...";
+
+                const payload = {
+                    nombre: document.getElementById('nombre').value.trim(),
+                    telefono: document.getElementById('telefono').value.trim(),
+                    correo: document.getElementById('correo').value.trim() || 'No proporcionado',
+                    tipoMueble: document.getElementById('tipoMueble').value,
+                    modeloReferencia: document.getElementById('modeloReferencia').value,
+                    material: document.getElementById('material').value,
+                    aclaraciones: document.getElementById('aclaraciones').value.trim() || 'Ninguna'
+                };
+
+                try {
+                    await fetch(GOOGLE_SHEETS_WEBAPP_URL, {
+                        method: "POST",
+                        mode: "no-cors",
+                        headers: { "Content-Type": "text/plain;charset=utf-8" },
+                        body: JSON.stringify(payload)
+                    });
+
+                    showModal(
+                        "Solicitud Registrada",
+                        "Su solicitud quedó registrada. La cotización formal, el anticipo del 50%, la liquidación en 3 a 4 meses y los pagos en efectivo o transferencia bancaria directa se realizan de manera presencial."
+                    );
+                    form.reset();
+                    populateModeloSelect('');
+                } catch (err) {
+                    showModal(
+                        "Error al registrar",
+                        "No se pudo guardar la solicitud en este momento. Intente de nuevo o utilice el botón de mensaje directo por WhatsApp."
+                    );
+                } finally {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = "Registrar Solicitud de Cotización";
+                }
+            });
+
+            closeModalBtn.addEventListener('click', hideModal);
+            modalOverlay.addEventListener('click', hideModal);
+        });
+    </script>
 </body>
 </html>
