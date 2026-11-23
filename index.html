@@ -370,6 +370,7 @@
                         <div>
                             <label for="nombre" class="block text-sm font-medium text-gray-700 mb-1">Nombre Completo *</label>
                             <input type="text" id="nombre" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-madera-media focus:border-transparent transition bg-gray-50 focus:bg-white" placeholder="Ej. Juan Pérez">
+                            <p id="error-nombre" class="text-xs text-red-600 mt-1 hidden">Ingrese su nombre completo.</p>
                         </div>
 
                         <div>
@@ -417,6 +418,13 @@
                                 <option value="Cedro Tostado">Cedro Tostado</option>
                                 <option value="Pino Escandinavo">Pino Escandinavo</option>
                                 <option value="Gris Ahumado">Gris Ahumado</option>
+                                <option value="Roble Claro">Roble Claro</option>
+                                <option value="Nogal Americano">Nogal Americano</option>
+                                <option value="Fresno Veteado">Fresno Veteado</option>
+                                <option value="Cedro Olmo">Cedro Olmo</option>
+                                <option value="Roble Oscuro">Roble Oscuro</option>
+                                <option value="Fresno Ceniza">Fresno Ceniza</option>
+                                <option value="Roble Ahumado">Roble Ahumado</option>
                             </select>
                             <p id="error-material" class="text-xs text-red-600 mt-1 hidden">Seleccione un material o tono.</p>
                         </div>
@@ -522,8 +530,6 @@
 
     <!-- Scripts de Interacción y Datos del Catálogo -->
     <script>
-        // ID de implementación: AKfycbznvnrB0k9jnrsdmqBHVmqCuG-Wyx2tnGX7t_KnbpF_4DMIMX_UuHGv3xPCiz1gQKxH
-        // URL de Biblioteca: https://script.google.com/macros/library/d/168KzRSslRF-tLoZ0SqicLi7u7mjInPXscNznOx079VtXDdH8_aj8Y8ck/2
         const GOOGLE_SHEETS_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbznvnrB0k9jnrsdmqBHVmqCuG-Wyx2tnGX7t_KnbpF_4DMIMX_UuHGv3xPCiz1gQKxH/exec";
 
         const maderaColores = [
@@ -736,12 +742,16 @@
 
             const tipoSelect = document.getElementById('tipoMueble');
             tipoSelect.value = catData.formTipo;
+            document.getElementById('error-tipoMueble').classList.add('hidden');
             populateModeloSelect(catData.formTipo, item.nombre);
 
             if (colorName) {
                 const matSelect = document.getElementById('material');
                 const existe = Array.from(matSelect.options).some(o => o.value === colorName);
-                if (existe) matSelect.value = colorName;
+                if (existe) {
+                    matSelect.value = colorName;
+                    document.getElementById('error-material').classList.add('hidden');
+                }
             }
 
             const contactoSection = document.getElementById('contacto');
@@ -770,12 +780,23 @@
             btn.addEventListener('click', () => menu.classList.toggle('hidden'));
             menuLinks.forEach(link => link.addEventListener('click', () => menu.classList.add('hidden')));
 
+            const nombreInput = document.getElementById('nombre');
+            const errNombre = document.getElementById('error-nombre');
+            nombreInput.addEventListener('input', () => {
+                if (nombreInput.value.trim()) {
+                    errNombre.classList.add('hidden');
+                }
+            });
+
             document.getElementById('tipoMueble').addEventListener('change', (e) => {
                 populateModeloSelect(e.target.value);
                 document.getElementById('error-tipoMueble').classList.add('hidden');
             });
 
-            // Teléfono: solo dígitos y máximo 10 caracteres
+            document.getElementById('material').addEventListener('change', () => {
+                document.getElementById('error-material').classList.add('hidden');
+            });
+
             const telInput = document.getElementById('telefono');
             const errTel = document.getElementById('error-telefono');
             telInput.addEventListener('input', () => {
@@ -785,7 +806,6 @@
                 }
             });
 
-            // Correo: validar estructura real si se escribe algo
             const correoInput = document.getElementById('correo');
             const errCorreo = document.getElementById('error-correo');
             correoInput.addEventListener('input', () => {
@@ -795,7 +815,6 @@
                 }
             });
 
-            // Imagen de referencia: validar tipo y tamaño (máx. 1 MB), comprimir en canvas y convertir a Base64
             const imgInput = document.getElementById('imagenReferencia');
             const errImg = document.getElementById('error-imagen');
             const previewBox = document.getElementById('preview-imagen-box');
@@ -884,7 +903,7 @@
             form.addEventListener('submit', async (e) => {
                 e.preventDefault();
 
-                const nombre = document.getElementById('nombre').value.trim();
+                const nombre = nombreInput.value.trim();
                 const telefono = telInput.value.trim();
                 const correo = correoInput.value.trim();
                 const tipoMueble = document.getElementById('tipoMueble').value;
@@ -895,8 +914,11 @@
                 let formularioValido = true;
 
                 if (!nombre) {
+                    errNombre.classList.remove('hidden');
                     formularioValido = false;
-                    document.getElementById('nombre').focus();
+                    nombreInput.focus();
+                } else {
+                    errNombre.classList.add('hidden');
                 }
 
                 if (!/^\d{10}$/.test(telefono)) {
@@ -918,11 +940,15 @@
                 if (!tipoMueble) {
                     document.getElementById('error-tipoMueble').classList.remove('hidden');
                     formularioValido = false;
+                } else {
+                    document.getElementById('error-tipoMueble').classList.add('hidden');
                 }
 
                 if (!material) {
                     document.getElementById('error-material').classList.remove('hidden');
                     formularioValido = false;
+                } else {
+                    document.getElementById('error-material').classList.add('hidden');
                 }
 
                 if (!formularioValido) return;
