@@ -795,7 +795,7 @@
                 }
             });
 
-            // Imagen de referencia: validar tipo y tamaño (máx. 1 MB) y convertir a Base64
+            // Imagen de referencia: validar tipo y tamaño (máx. 1 MB), comprimir en canvas y convertir a Base64
             const imgInput = document.getElementById('imagenReferencia');
             const errImg = document.getElementById('error-imagen');
             const previewBox = document.getElementById('preview-imagen-box');
@@ -830,12 +830,31 @@
 
                 const reader = new FileReader();
                 reader.onload = () => {
-                    imagenReferenciaBase64 = reader.result;
-                    imagenReferenciaNombre = file.name;
-                    previewImg.src = imagenReferenciaBase64;
-                    previewNombre.textContent = file.name;
-                    previewBox.classList.remove('hidden');
-                    previewBox.classList.add('flex');
+                    const img = new Image();
+                    img.onload = () => {
+                        const maxAncho = 1200;
+                        let ancho = img.width;
+                        let alto = img.height;
+
+                        if (ancho > maxAncho) {
+                            alto = Math.round((alto * maxAncho) / ancho);
+                            ancho = maxAncho;
+                        }
+
+                        const canvas = document.createElement('canvas');
+                        canvas.width = ancho;
+                        canvas.height = alto;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, ancho, alto);
+
+                        imagenReferenciaBase64 = canvas.toDataURL('image/jpeg', 0.75);
+                        imagenReferenciaNombre = file.name.replace(/\.[^/.]+$/, "") + ".jpg";
+                        previewImg.src = imagenReferenciaBase64;
+                        previewNombre.textContent = imagenReferenciaNombre;
+                        previewBox.classList.remove('hidden');
+                        previewBox.classList.add('flex');
+                    };
+                    img.src = reader.result;
                 };
                 reader.readAsDataURL(file);
             });
