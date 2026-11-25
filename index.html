@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kardex Mueblería | Diseño y Fabricación a la Medida</title>
-    
+
     <!-- Integración de Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,7 +12,7 @@
 
     <!-- Integración de Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
+
     <!-- Configuración personalizada de colores para la paleta de "Madera" -->
     <script>
         tailwind.config = {
@@ -68,13 +68,16 @@
                     </svg>
                     <span class="font-serif font-bold text-2xl tracking-tight text-madera-oscura">Kardex<span class="text-madera-media">Web</span></span>
                 </div>
-                
+
                 <!-- Menú Desktop -->
-                <div class="hidden md:flex space-x-8">
+                <div class="hidden md:flex space-x-8 items-center">
                     <a href="#inicio" class="text-madera-texto hover:text-madera-media font-medium transition">Inicio</a>
                     <a href="#catalogo" class="text-madera-texto hover:text-madera-media font-medium transition">Catálogo</a>
                     <a href="#politicas" class="text-madera-texto hover:text-madera-media font-medium transition">Políticas</a>
                     <a href="#contacto" class="text-madera-texto hover:text-madera-media font-medium transition">Cotización</a>
+                    <button type="button" id="nav-owner-btn" class="text-xs px-3 py-1.5 rounded-lg border border-madera-oscura/30 text-madera-oscura hover:bg-madera-clara transition font-medium">
+                        Dueños
+                    </button>
                 </div>
 
                 <!-- Botón Menú Móvil -->
@@ -95,6 +98,9 @@
                 <a href="#catalogo" class="block px-3 py-2 text-base font-medium text-madera-texto hover:bg-madera-clara rounded-md">Catálogo</a>
                 <a href="#politicas" class="block px-3 py-2 text-base font-medium text-madera-texto hover:bg-madera-clara rounded-md">Políticas Comerciales</a>
                 <a href="#contacto" class="block px-3 py-2 text-base font-medium text-madera-texto hover:bg-madera-clara rounded-md">Cotización</a>
+                <button type="button" id="mobile-owner-btn" class="w-full text-left px-3 py-2 text-base font-medium text-madera-oscura hover:bg-madera-clara rounded-md">
+                    Acceso Dueños
+                </button>
             </div>
         </div>
     </nav>
@@ -105,7 +111,7 @@
             <img src="https://images.unsplash.com/photo-1556910103-1c02745aae4d?auto=format&fit=crop&q=80&w=1920" alt="Taller de carpintería fina" class="w-full h-full object-cover object-center opacity-40">
         </div>
         <div class="absolute inset-0 hero-overlay"></div>
-        
+
         <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-16 lg:mt-24">
             <div class="max-w-2xl">
                 <span class="uppercase tracking-widest text-madera-clara text-sm font-semibold mb-4 block">Chihuahua, Chih.</span>
@@ -127,6 +133,112 @@
         </div>
     </section>
 
+    <!-- Panel Exclusivo para Dueños (Oculto hasta iniciar sesión) -->
+    <section id="owner-admin-panel" class="hidden py-14 bg-amber-50/80 border-y-2 border-madera-media/40">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-white p-6 rounded-2xl shadow border border-amber-200/70">
+                <div>
+                    <span class="text-xs font-bold uppercase tracking-wider text-madera-media">Modo Administración Activo — Kardex Mueblería</span>
+                    <h2 class="text-2xl font-serif font-bold text-madera-oscura">Administrar Categorías, Muebles y Tonos</h2>
+                    <p class="text-xs text-gray-600 mt-1">
+                        Los cambios se guardan en este navegador y actualizan el catálogo y los campos de cotización automáticamente.
+                    </p>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                    <button type="button" id="btn-reset-catalog" class="px-3.5 py-2 text-xs font-medium rounded-lg border border-red-300 text-red-700 hover:bg-red-50 transition">
+                        Restablecer catálogo inicial
+                    </button>
+                    <button type="button" id="btn-close-panel-logout" class="px-3.5 py-2 text-xs font-medium rounded-lg bg-madera-oscura text-white hover:bg-madera-media transition">
+                        Cerrar sesión de dueño
+                    </button>
+                </div>
+            </div>
+
+            <!-- 1. Colores / Tonos -->
+            <div class="bg-white p-6 rounded-2xl shadow border border-gray-100">
+                <h3 class="text-lg font-serif font-bold text-madera-oscura mb-4">1. Colores y Tonos de Madera</h3>
+                <form id="add-color-form" class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-5">
+                    <input type="text" id="new-color-name" required placeholder="Nombre del tono (ej. Nogal Chocolate)" class="px-3.5 py-2 rounded-lg border border-gray-300 text-sm">
+                    <div class="flex items-center gap-2">
+                        <input type="color" id="new-color-hex" value="#6F4E37" class="h-10 w-16 rounded border border-gray-300 cursor-pointer">
+                        <span class="text-xs text-gray-500">Color de muestra</span>
+                    </div>
+                    <button type="submit" class="px-4 py-2 rounded-lg bg-madera-media hover:bg-madera-oscura text-white text-sm font-medium transition">
+                        + Agregar Tono
+                    </button>
+                </form>
+                <div id="admin-colors-list" class="flex flex-wrap gap-2.5"></div>
+            </div>
+
+            <!-- 2. Categorías -->
+            <div class="bg-white p-6 rounded-2xl shadow border border-gray-100">
+                <h3 class="text-lg font-serif font-bold text-madera-oscura mb-4">2. Categorías del Catálogo</h3>
+                <form id="add-category-form" class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+                    <input type="text" id="new-cat-title" required placeholder="Título categoría (ej. Recámaras)" class="px-3.5 py-2 rounded-lg border border-gray-300 text-sm">
+                    <input type="text" id="new-cat-formtipo" required placeholder="Valor en Cotización (ej. Recámara)" class="px-3.5 py-2 rounded-lg border border-gray-300 text-sm">
+                    <input type="text" id="new-cat-image" required placeholder="URL de imagen o sube archivo abajo" class="px-3.5 py-2 rounded-lg border border-gray-300 text-sm">
+                    <button type="submit" class="px-4 py-2 rounded-lg bg-madera-media hover:bg-madera-oscura text-white text-sm font-medium transition">
+                        + Agregar Categoría
+                    </button>
+                </form>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5">
+                    <div>
+                        <label class="block text-xs text-gray-600 mb-1">O subir imagen de categoría (JPG/PNG/WEBP, máx. 1 MB):</label>
+                        <input type="file" id="new-cat-file" accept="image/jpeg,image/png,image/webp" class="text-xs text-gray-600">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-gray-600 mb-1">Descripción breve de la categoría:</label>
+                        <input type="text" id="new-cat-desc" placeholder="Muebles personalizados fabricados a la medida." class="w-full px-3 py-1.5 rounded-lg border border-gray-300 text-xs">
+                    </div>
+                </div>
+                <div id="admin-categories-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"></div>
+            </div>
+
+            <!-- 3. Muebles por Categoría -->
+            <div class="bg-white p-6 rounded-2xl shadow border border-gray-100">
+                <h3 class="text-lg font-serif font-bold text-madera-oscura mb-4">3. Muebles dentro de Cada Categoría</h3>
+                <form id="add-item-form" class="space-y-4 mb-6">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-xs font-medium text-gray-700 mb-1">Categoría destino</label>
+                            <select id="new-item-category" class="w-full px-3.5 py-2 rounded-lg border border-gray-300 text-sm bg-white"></select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-700 mb-1">Nombre del mueble</label>
+                            <input type="text" id="new-item-name" required placeholder="Ej. Cocina en U Roble" class="w-full px-3.5 py-2 rounded-lg border border-gray-300 text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-700 mb-1">URL de imagen (o sube archivo abajo)</label>
+                            <input type="text" id="new-item-image" placeholder="https://..." class="w-full px-3.5 py-2 rounded-lg border border-gray-300 text-sm">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-medium text-gray-700 mb-1">Subir imagen desde equipo (JPG/PNG/WEBP, máx. 1 MB)</label>
+                            <input type="file" id="new-item-file" accept="image/jpeg,image/png,image/webp" class="text-xs text-gray-600">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-700 mb-1">Descripción</label>
+                            <input type="text" id="new-item-desc" required placeholder="Descripción breve del mueble y acabados" class="w-full px-3.5 py-2 rounded-lg border border-gray-300 text-sm">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-700 mb-1">Tonos disponibles para este mueble (si no marcas ninguno, usará los primeros 3)</label>
+                        <div id="new-item-colors-checkboxes" class="flex flex-wrap gap-3"></div>
+                    </div>
+                    <button type="submit" class="px-5 py-2.5 rounded-lg bg-madera-oscura hover:bg-madera-media text-white text-sm font-medium transition">
+                        + Agregar Mueble a la Categoría
+                    </button>
+                </form>
+
+                <div class="border-t pt-4">
+                    <label class="block text-xs font-bold uppercase tracking-wider text-gray-600 mb-3">Muebles actuales en la categoría seleccionada arriba:</label>
+                    <div id="admin-items-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- 3. Galería de Catálogo Principal -->
     <section id="catalogo" class="py-20 bg-[#FAFAFA]">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -135,80 +247,8 @@
                 <p class="text-gray-600 max-w-2xl mx-auto">Haz clic en cualquier categoría para abrir la galería de modelos y seleccionar un tono de madera de referencia.</p>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                <!-- Tarjeta Cocinas -->
-                <div onclick="openCategoryModal('cocinas')" class="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 card-zoom cursor-pointer group flex flex-col justify-between border border-gray-100">
-                    <div>
-                        <div class="h-64 overflow-hidden relative">
-                            <img src="https://images.unsplash.com/photo-1556909211-36987daf7b4d?auto=format&fit=crop&q=80&w=800" alt="Cocina a la medida" class="w-full h-full object-cover transition-transform duration-500">
-                            <div class="absolute inset-0 bg-black bg-opacity-25 group-hover:bg-opacity-10 transition-all"></div>
-                            <span class="absolute top-4 right-4 bg-madera-oscura/90 text-white text-xs font-semibold px-3 py-1 rounded-full backdrop-blur-sm">8 Modelos</span>
-                        </div>
-                        <div class="p-6">
-                            <h3 class="text-xl font-serif font-bold text-madera-oscura mb-2 group-hover:text-madera-media transition-colors">Cocinas Integrales</h3>
-                            <p class="text-sm text-gray-600">Islas centrales, alacenas superiores y cocinas modernas o clásicas diseñadas a la medida.</p>
-                        </div>
-                    </div>
-                    <div class="px-6 pb-6 pt-0 text-right">
-                        <span class="text-xs font-bold text-madera-media tracking-wider uppercase inline-flex items-center gap-1 group-hover:translate-x-1 transition-transform">Explorar Categoría &rarr;</span>
-                    </div>
-                </div>
+            <div id="catalog-categories-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8"></div>
 
-                <!-- Tarjeta Clósets -->
-                <div onclick="openCategoryModal('closets')" class="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 card-zoom cursor-pointer group flex flex-col justify-between border border-gray-100">
-                    <div>
-                        <div class="h-64 overflow-hidden relative">
-                            <img src="https://www.elmueble.com/medio/2021/04/14/00490845_0aaeb1e0_2000x1196.jpg" alt="Clóset a la medida" class="w-full h-full object-cover transition-transform duration-500">
-                            <div class="absolute inset-0 bg-black bg-opacity-25 group-hover:bg-opacity-10 transition-all"></div>
-                            <span class="absolute top-4 right-4 bg-madera-oscura/90 text-white text-xs font-semibold px-3 py-1 rounded-full backdrop-blur-sm">8 Modelos</span>
-                        </div>
-                        <div class="p-6">
-                            <h3 class="text-xl font-serif font-bold text-madera-oscura mb-2 group-hover:text-madera-media transition-colors">Clósets y Vestidores</h3>
-                            <p class="text-sm text-gray-600">Vestidores abiertos, armarios empotrados y sistemas modulares con acabados finos.</p>
-                        </div>
-                    </div>
-                    <div class="px-6 pb-6 pt-0 text-right">
-                        <span class="text-xs font-bold text-madera-media tracking-wider uppercase inline-flex items-center gap-1 group-hover:translate-x-1 transition-transform">Explorar Categoría &rarr;</span>
-                    </div>
-                </div>
-
-                <!-- Tarjeta Salas -->
-                <div onclick="openCategoryModal('salas')" class="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 card-zoom cursor-pointer group flex flex-col justify-between border border-gray-100">
-                    <div>
-                        <div class="h-64 overflow-hidden relative">
-                            <img src="https://oechsle.vteximg.com.br/arquivos/ids/18161186-800-800/2597445_1.jpg?v=638536518720500000" alt="Mueble de TV y Sala" class="w-full h-full object-cover transition-transform duration-500">
-                            <div class="absolute inset-0 bg-black bg-opacity-25 group-hover:bg-opacity-10 transition-all"></div>
-                            <span class="absolute top-4 right-4 bg-madera-oscura/90 text-white text-xs font-semibold px-3 py-1 rounded-full backdrop-blur-sm">8 Modelos</span>
-                        </div>
-                        <div class="p-6">
-                            <h3 class="text-xl font-serif font-bold text-madera-oscura mb-2 group-hover:text-madera-media transition-colors">Centros de Entretenimiento</h3>
-                            <p class="text-sm text-gray-600">Paneles flotantes, lambrines, repisas y consolas para pantallas y salas de estar.</p>
-                        </div>
-                    </div>
-                    <div class="px-6 pb-6 pt-0 text-right">
-                        <span class="text-xs font-bold text-madera-media tracking-wider uppercase inline-flex items-center gap-1 group-hover:translate-x-1 transition-transform">Explorar Categoría &rarr;</span>
-                    </div>
-                </div>
-
-                <!-- Tarjeta Comedores -->
-                <div onclick="openCategoryModal('comedores')" class="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 card-zoom cursor-pointer group flex flex-col justify-between border border-gray-100">
-                    <div>
-                        <div class="h-64 overflow-hidden relative">
-                            <img src="https://www.elmueble.com/medio/2020/10/07/00517094_d4158770_1200x1500.jpg" alt="Comedor de madera" class="w-full h-full object-cover transition-transform duration-500">
-                            <div class="absolute inset-0 bg-black bg-opacity-25 group-hover:bg-opacity-10 transition-all"></div>
-                            <span class="absolute top-4 right-4 bg-madera-oscura/90 text-white text-xs font-semibold px-3 py-1 rounded-full backdrop-blur-sm">8 Modelos</span>
-                        </div>
-                        <div class="p-6">
-                            <h3 class="text-xl font-serif font-bold text-madera-oscura mb-2 group-hover:text-madera-media transition-colors">Comedores y Mesas</h3>
-                            <p class="text-sm text-gray-600">Mesas robustas cuadradas, rectangulares y redondas con sillas artesanales a juego.</p>
-                        </div>
-                    </div>
-                    <div class="px-6 pb-6 pt-0 text-right">
-                        <span class="text-xs font-bold text-madera-media tracking-wider uppercase inline-flex items-center gap-1 group-hover:translate-x-1 transition-transform">Explorar Categoría &rarr;</span>
-                    </div>
-                </div>
-            </div>
-            
             <div class="mt-12 text-center">
                 <p class="text-sm text-gray-500 italic">* Las imágenes son muestras de nuestro trabajo. Todo mueble se cotiza y fabrica de manera presencial según medidas y disponibilidad.</p>
             </div>
@@ -309,7 +349,7 @@
                     <p class="text-gray-700 mb-8 leading-relaxed">
                         En <strong>Kardex Mueblería</strong> trabajamos bajo fabricación personalizada sobre pedido. No realizamos ventas en línea ni manejamos inventarios automatizados. Toda cotización formal, cierre de venta y cobro se realiza de manera <strong>100% presencial</strong> en nuestra oficina/taller en Chihuahua, Chih.:
                     </p>
-                    
+
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <div class="flex items-start gap-4">
                             <div class="flex-shrink-0 mt-1 bg-madera-clara p-2 rounded-full text-madera-oscura">
@@ -356,7 +396,7 @@
         </div>
     </section>
 
-    <!-- 5. Formulario Estructurado de Solicitud de Cotización -->
+    <!-- 5. Formulario Estructurado de Solicitud de Cotización (Sin envío de imágenes) -->
     <section id="contacto" class="py-20 bg-white">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-12">
@@ -391,10 +431,6 @@
                             <label for="tipoMueble" class="block text-sm font-medium text-gray-700 mb-1">Tipo de Mueble *</label>
                             <select id="tipoMueble" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-madera-media focus:border-transparent transition bg-gray-50 focus:bg-white">
                                 <option value="" selected disabled>Selecciona un tipo de mueble...</option>
-                                <option value="Cocina Integral">Cocina Integral</option>
-                                <option value="Clóset / Vestidor">Clóset / Vestidor</option>
-                                <option value="Sala / Centro de Entretenimiento">Sala / Centro de Entretenimiento</option>
-                                <option value="Comedor / Mesa">Comedor / Mesa</option>
                             </select>
                             <p id="error-tipoMueble" class="text-xs text-red-600 mt-1 hidden">Seleccione un tipo de mueble.</p>
                         </div>
@@ -412,37 +448,8 @@
                             <label for="material" class="block text-sm font-medium text-gray-700 mb-1">Material / Tono Preestablecido *</label>
                             <select id="material" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-madera-media focus:border-transparent transition bg-gray-50 focus:bg-white">
                                 <option value="" selected disabled>Selecciona material o tono...</option>
-                                <option value="Encino Natural">Encino Natural</option>
-                                <option value="Nogal Oscuro">Nogal Oscuro</option>
-                                <option value="Caoba Clásica">Caoba Clásica</option>
-                                <option value="Cedro Tostado">Cedro Tostado</option>
-                                <option value="Pino Escandinavo">Pino Escandinavo</option>
-                                <option value="Gris Ahumado">Gris Ahumado</option>
-                                <option value="Roble Claro">Roble Claro</option>
-                                <option value="Nogal Americano">Nogal Americano</option>
-                                <option value="Fresno Veteado">Fresno Veteado</option>
-                                <option value="Cedro Olmo">Cedro Olmo</option>
-                                <option value="Roble Oscuro">Roble Oscuro</option>
-                                <option value="Fresno Ceniza">Fresno Ceniza</option>
-                                <option value="Roble Ahumado">Roble Ahumado</option>
                             </select>
                             <p id="error-material" class="text-xs text-red-600 mt-1 hidden">Seleccione un material o tono.</p>
-                        </div>
-                    </div>
-
-                    <!-- Imagen de referencia para Modelo de Referencia -->
-                    <div class="bg-gray-50 p-4 rounded-xl border border-gray-200">
-                        <label for="imagenReferencia" class="block text-sm font-medium text-gray-700 mb-1">
-                            Imagen de Referencia del Modelo (Opcional — JPG, PNG o WEBP, máx. 1 MB)
-                        </label>
-                        <input type="file" id="imagenReferencia" accept="image/jpeg,image/png,image/webp" class="block w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-madera-clara file:text-madera-oscura hover:file:bg-madera-media hover:file:text-white transition">
-                        <p id="error-imagen" class="text-xs text-red-600 mt-1 hidden"></p>
-                        <div id="preview-imagen-box" class="mt-3 hidden items-center gap-4">
-                            <img id="preview-imagen-img" src="" alt="Vista previa de referencia" class="w-20 h-20 object-cover rounded-lg border border-gray-300">
-                            <div class="text-xs text-gray-600">
-                                <p id="preview-imagen-nombre" class="font-medium text-madera-texto"></p>
-                                <button type="button" id="btn-quitar-imagen" class="text-red-600 hover:underline mt-1">Quitar imagen</button>
-                            </div>
                         </div>
                     </div>
 
@@ -450,7 +457,7 @@
                         <label for="aclaraciones" class="block text-sm font-medium text-gray-700 mb-1">Aclaraciones adicionales (Opcional)</label>
                         <textarea id="aclaraciones" rows="3" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-madera-media focus:border-transparent transition bg-gray-50 focus:bg-white resize-none" placeholder="Ej. Medidas aproximadas, horario sugerido para acudir a oficina o alguna aclaración puntual..."></textarea>
                     </div>
-                    
+
                     <div class="bg-gray-50 p-4 rounded-lg text-xs text-gray-500 flex items-start gap-2">
                         <svg class="w-5 h-5 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                         <p>Su solicitud se registrará en nuestra hoja de control de prospectos. Las cotizaciones finales, anticipo del 50%, plazo de liquidación de 3 a 4 meses y pagos (efectivo o transferencia bancaria directa) son 100% presenciales.</p>
@@ -485,15 +492,24 @@
                     <p class="text-sm">Catálogo informativo. No realizamos ventas en línea. Cotizaciones, cierres y pagos (50% anticipo, saldo 3 a 4 meses, efectivo o transferencia bancaria directa) son 100% presenciales.</p>
                 </div>
             </div>
-            <div class="border-t border-[#4a3424] mt-8 pt-8 text-center text-sm">
+            <div class="border-t border-[#4a3424] mt-8 pt-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-sm">
                 <p>&copy; 2026 Kardex Mueblería. Todos los derechos reservados.</p>
+                <div class="flex items-center gap-3 text-xs">
+                    <button type="button" id="footer-owner-btn" class="text-gray-400 hover:text-madera-clara underline">
+                        Acceso Dueños
+                    </button>
+                    <span id="owner-session-badge" class="hidden px-2 py-0.5 rounded bg-amber-700/40 text-amber-200 font-medium">
+                        Modo Dueño Activo
+                        <button type="button" id="owner-logout-btn" class="ml-2 underline text-white">Salir</button>
+                    </span>
+                </div>
             </div>
         </div>
     </footer>
 
-    <!-- Botón Flotante WhatsApp (Único enlace directo a WhatsApp) -->
-    <a href="https://wa.me/529182235998?text=Hola%20Kardex%20Muebler%C3%ADa,%20vengo%20de%20su%20p%C3%A1gina%20web%20y%20me%20gustar%C3%ADa%20enviar%20un%20mensaje%20directo." 
-       target="_blank" 
+    <!-- Botón Flotante WhatsApp -->
+    <a href="https://wa.me/529182235998?text=Hola%20Kardex%20Muebler%C3%ADa,%20vengo%20de%20su%20p%C3%A1gina%20web%20y%20me%20gustar%C3%ADa%20enviar%20un%20mensaje%20directo."
+       target="_blank"
        rel="noopener noreferrer"
        class="fixed bottom-6 right-6 bg-[#25D366] text-white p-4 rounded-full shadow-2xl hover:bg-[#128C7E] hover:scale-110 transition-all duration-300 z-40 flex items-center justify-center group"
        aria-label="Contactar por WhatsApp">
@@ -504,6 +520,30 @@
             Mensaje directo
         </span>
     </a>
+
+    <!-- Modal de Inicio de Sesión para Dueños -->
+    <div id="owner-login-modal" class="fixed inset-0 z-[110] hidden items-center justify-center p-4">
+        <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" id="owner-login-overlay"></div>
+        <div class="relative bg-white rounded-2xl shadow-2xl p-6 sm:p-8 max-w-md w-full z-10 border border-gray-100">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-xl font-serif font-bold text-madera-oscura">Acceso Exclusivo Dueños</h3>
+                <button type="button" id="close-owner-login-btn" class="text-gray-400 hover:text-gray-700 text-xl leading-none">&times;</button>
+            </div>
+            <p class="text-xs text-gray-600 mb-4">
+                Inicie sesión para administrar categorías, muebles, imágenes y tonos disponibles en el catálogo y en el formulario de cotización.
+            </p>
+            <form id="owner-login-form" class="space-y-4">
+                <div>
+                    <label for="owner-password-input" class="block text-sm font-medium text-gray-700 mb-1">Contraseña de administración</label>
+                    <input type="password" id="owner-password-input" required class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-madera-media focus:border-transparent" placeholder="Ingrese la contraseña">
+                    <p id="owner-login-error" class="text-xs text-red-600 mt-1 hidden">Contraseña incorrecta.</p>
+                </div>
+                <button type="submit" class="w-full py-2.5 px-4 rounded-lg bg-madera-oscura hover:bg-madera-media text-white font-medium text-sm transition">
+                    Entrar al Panel
+                </button>
+            </form>
+        </div>
+    </div>
 
     <!-- Modal de Confirmación -->
     <div id="custom-modal" class="fixed inset-0 z-[100] hidden items-center justify-center">
@@ -528,11 +568,16 @@
         </div>
     </div>
 
-    <!-- Scripts de Interacción y Datos del Catálogo -->
+    <!-- Scripts de Interacción, Catálogo Dinámico y Panel de Dueños -->
     <script>
         const GOOGLE_SHEETS_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbznvnrB0k9jnrsdmqBHVmqCuG-Wyx2tnGX7t_KnbpF_4DMIMX_UuHGv3xPCiz1gQKxH/exec";
+        const OWNER_PASSWORD = "kardex2026"; // Cambia esta contraseña antes de publicar
 
-        const maderaColores = [
+        const STORAGE_KEY_CATALOG = "kardex_catalog_v1";
+        const STORAGE_KEY_COLORS = "kardex_colors_v1";
+        const STORAGE_KEY_SESSION = "kardex_owner_logged_in";
+
+        const DEFAULT_COLORS = [
             { nombre: "Encino Natural", hex: "#D2B48C" },
             { nombre: "Nogal Oscuro", hex: "#4A2E1B" },
             { nombre: "Caoba Clásica", hex: "#6A2B28" },
@@ -541,95 +586,175 @@
             { nombre: "Gris Ahumado", hex: "#708090" }
         ];
 
-        const catalogData = {
+        const DEFAULT_CATALOG = {
             cocinas: {
-                title: "Cocinas Integrales a la Medida",
+                title: "Cocinas Integrales",
                 badge: "Cocinas Integrales",
                 formTipo: "Cocina Integral",
+                coverImage: "https://images.unsplash.com/photo-1556909211-36987daf7b4d?auto=format&fit=crop&q=80&w=800",
+                description: "Islas centrales, alacenas superiores y cocinas modernas o clásicas diseñadas a la medida.",
                 items: [
-                    { nombre: "Cocina Isla Encino Natural", imagen: "https://images.unsplash.com/photo-1556909211-36987daf7b4d?auto=format&fit=crop&q=80&w=1000", descripcion: "Isla central espaciosa con cajoneras de cierre suave, alacenas superiores al techo y repisas integradas.", colores: [maderaColores[0], maderaColores[1], maderaColores[4]] },
-                    { nombre: "Cocina Clásica Nogal y Mármol", imagen: "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&q=80&w=1000", descripcion: "Estructura tradicional en madera maciza con molduras talladas a mano y acabado en poliuretano mate.", colores: [maderaColores[1], maderaColores[2], maderaColores[3]] },
-                    { nombre: "Cocina Minimalista Pino Blanco", imagen: "https://images.unsplash.com/photo-1507089947368-19c1da9775ae?auto=format&fit=crop&q=80&w=1000", descripcion: "Líneas rectas horizontales, jaladeras ocultas tipo tirador y nicho para microondas y horno empotrado.", colores: [maderaColores[4], maderaColores[0], maderaColores[5]] },
-                    { nombre: "Cocina L-Shape Caoba Imperial", imagen: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&q=80&w=1000", descripcion: "Distribución en L optimizada para esquinas con especiero extraíble y cava para botellas de vino.", colores: [maderaColores[2], maderaColores[1], maderaColores[3]] },
-                    { nombre: "Cocina Rústica Cedro de Sierra", imagen: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&q=80&w=1000", descripcion: "Vetas marcadas con textura artesanal al tacto, repisas gruesas suspendidas y marcos tradicionales.", colores: [maderaColores[3], maderaColores[0], maderaColores[1]] },
-                    { nombre: "Cocina Moderna Gris Ahumado", imagen: "https://images.unsplash.com/photo-1565538810643-b5bdb714032a?auto=format&fit=crop&q=80&w=1000", descripcion: "Combinación de madera entintada en tono gris mate con acentos de alacena en pino claro.", colores: [maderaColores[5], maderaColores[0], maderaColores[4]] },
-                    { nombre: "Cocina Abierta Roble Industrial", imagen: "https://images.unsplash.com/photo-1507652313519-d4e9174996dd?auto=format&fit=crop&q=80&w=1000", descripcion: "Diseño urbano para loft con despensa alta vertical y barras desayunadoras en bloques sólidos.", colores: [maderaColores[0], maderaColores[1], maderaColores[5]] },
-                    { nombre: "Cocina Ebanista Fresno Premium", imagen: "https://images.unsplash.com/photo-1528698827591-e19ccd7bc23d?auto=format&fit=crop&q=80&w=1000", descripcion: "Fabricación gourmet con iluminación LED empotrada bajo gabinetes y cajones organizadores de utensilios.", colores: [maderaColores[0], maderaColores[2], maderaColores[4]] }
+                    { nombre: "Cocina Isla Encino Natural", imagen: "https://images.unsplash.com/photo-1556909211-36987daf7b4d?auto=format&fit=crop&q=80&w=1000", descripcion: "Isla central espaciosa con cajoneras de cierre suave, alacenas superiores al techo y repisas integradas.", colores: [DEFAULT_COLORS[0], DEFAULT_COLORS[1], DEFAULT_COLORS[4]] },
+                    { nombre: "Cocina Clásica Nogal y Mármol", imagen: "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&q=80&w=1000", descripcion: "Estructura tradicional en madera maciza con molduras talladas a mano y acabado en poliuretano mate.", colores: [DEFAULT_COLORS[1], DEFAULT_COLORS[2], DEFAULT_COLORS[3]] }
                 ]
             },
             closets: {
-                title: "Clósets y Vestidores Personalizados",
+                title: "Clósets y Vestidores",
                 badge: "Clósets y Vestidores",
                 formTipo: "Clóset / Vestidor",
+                coverImage: "https://www.elmueble.com/medio/2021/04/14/00490845_0aaeb1e0_2000x1196.jpg",
+                description: "Vestidores abiertos, armarios empotrados y sistemas modulares con acabados finos.",
                 items: [
-                    { nombre: "Vestidor Abierto Roble Claro", imagen: "https://www.elmueble.com/medio/2021/04/14/00490845_0aaeb1e0_2000x1196.jpg", descripcion: "Vestidor tipo Walk-in con zapateras inclinadas extraíbles, maleteros dobles y tubos colgadores de aluminio.", colores: [maderaColores[0], maderaColores[4], maderaColores[5]] },
-                    { nombre: "Clóset Empotrado con Luna Caoba", imagen: "https://images.unsplash.com/photo-1558882224-dda166733046?auto=format&fit=crop&q=80&w=1000", descripcion: "Armario de pared a pared con espejos centrales rectangulares y cajonera interior de 6 compartimentos.", colores: [maderaColores[2], maderaColores[1], maderaColores[3]] },
-                    { nombre: "Vestidor en Esquina Nogal Americano", imagen: "https://images.unsplash.com/photo-1616046229478-9901c5536a45?auto=format&fit=crop&q=80&w=1000", descripcion: "Aprovechamiento total de ángulos muertos con rinconeras giratorias y módulo organizador de corbatas.", colores: [maderaColores[1], maderaColores[0], maderaColores[2]] },
-                    { nombre: "Clóset Corredizo Fresno Veteado", imagen: "https://images.unsplash.com/photo-1595428774223-ef52624120d2?auto=format&fit=crop&q=80&w=1000", descripcion: "Puertas correderas con sistema riel ultrasilencioso y compartimentos superiores para cobijas.", colores: [maderaColores[0], maderaColores[5], maderaColores[4]] },
-                    { nombre: "Armario Clásico Cedro Olmo", imagen: "https://images.unsplash.com/photo-1540518614846-7eded433c457?auto=format&fit=crop&q=80&w=1000", descripcion: "Mueble exento de 4 puertas abatibles con chapa de madera fina y olor natural a cedro protector.", colores: [maderaColores[3], maderaColores[2], maderaColores[1]] },
-                    { nombre: "Isla Central para Vestidor de Lujo", imagen: "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&q=80&w=1000", descripcion: "Mueble cajonero central para joyería y accesorios con cubierta superior de cristal templado.", colores: [maderaColores[1], maderaColores[0], maderaColores[2]] },
-                    { nombre: "Clóset Juvenil Pino Escandinavo", imagen: "https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?auto=format&fit=crop&q=80&w=1000", descripcion: "Diseño fresco con módulos abiertos intercambiables y estantes regulables en altura.", colores: [maderaColores[4], maderaColores[0], maderaColores[5]] },
-                    { nombre: "Vestidor Modular Gris Ahumado", imagen: "https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&q=80&w=1000", descripcion: "Acabado contemporáneo mate con iluminación en tiras LED cálidas integradas en cada entrepaño.", colores: [maderaColores[5], maderaColores[1], maderaColores[0]] }
+                    { nombre: "Vestidor Abierto Roble Claro", imagen: "https://www.elmueble.com/medio/2021/04/14/00490845_0aaeb1e0_2000x1196.jpg", descripcion: "Vestidor tipo Walk-in con zapateras inclinadas extraíbles, maleteros dobles y tubos colgadores de aluminio.", colores: [DEFAULT_COLORS[0], DEFAULT_COLORS[4], DEFAULT_COLORS[5]] }
                 ]
             },
             salas: {
-                title: "Centros de Entretenimiento y Salas",
+                title: "Centros de Entretenimiento",
                 badge: "Salas y TV",
                 formTipo: "Sala / Centro de Entretenimiento",
+                coverImage: "https://oechsle.vteximg.com.br/arquivos/ids/18161186-800-800/2597445_1.jpg?v=638536518720500000",
+                description: "Paneles flotantes, lambrines, repisas y consolas para pantallas y salas de estar.",
                 items: [
-                    { nombre: "Panel Flotante Lambrin Encino", imagen: "https://oechsle.vteximg.com.br/arquivos/ids/18161186-800-800/2597445_1.jpg?v=638536518720500000", descripcion: "Pared decorativa en listones verticales de madera con consola inferior suspendida para aparatos.", colores: [maderaColores[0], maderaColores[1], maderaColores[3]] },
-                    { nombre: "Mueble TV Consola Nogal", imagen: "https://images.unsplash.com/photo-1595428774223-ef52624120d2?auto=format&fit=crop&q=80&w=1000", descripcion: "Buffet bajo para pantallas de hasta 75 pulgadas con puertas de malla artesanal y gestión de cables.", colores: [maderaColores[1], maderaColores[2], maderaColores[0]] },
-                    { nombre: "Librero Modular Caoba & Cristal", imagen: "https://images.unsplash.com/photo-1541123437800-1bb1317badc2?auto=format&fit=crop&q=80&w=1000", descripcion: "Estantería de piso a techo con nichos iluminados y repisas reforzadas para libros pesados.", colores: [maderaColores[2], maderaColores[3], maderaColores[1]] },
-                    { nombre: "Mesa de Centro Sólida Cedro", imagen: "https://images.unsplash.com/photo-1533090161767-e6ffed986c88?auto=format&fit=crop&q=80&w=1000", descripcion: "Mesa baja en corte de tronco natural pulido y sellado con base geométrica de soporte.", colores: [maderaColores[3], maderaColores[0], maderaColores[1]] },
-                    { nombre: "Credenza de Sala Roble Oscuro", imagen: "https://images.unsplash.com/photo-1538688525198-9b88f6f53126?auto=format&fit=crop&q=80&w=1000", descripcion: "Mueble auxiliar con 4 cajones profundos y puertas laterales para vajillas o mantelería.", colores: [maderaColores[1], maderaColores[2], maderaColores[5]] },
-                    { nombre: "Centro TV con Chimenea Integrada", imagen: "https://images.unsplash.com/photo-1600585152220-90363fe7e115?auto=format&fit=crop&q=80&w=1000", descripcion: "Mueble integral con nicho para chimenea ecológica de bioetanol o eléctrica decorativa.", colores: [maderaColores[0], maderaColores[1], maderaColores[4]] },
-                    { nombre: "Panel de Pared TV Fresno Ceniza", imagen: "https://images.unsplash.com/photo-1618219908412-a29a1bb7b86e?auto=format&fit=crop&q=80&w=1000", descripcion: "Estructura limpia e imponente para ocultar cables de consolas, sonido y conectividad.", colores: [maderaColores[5], maderaColores[0], maderaColores[4]] },
-                    { nombre: "Librero de Esquina Pino Escandinavo", imagen: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&q=80&w=1000", descripcion: "Mueble ligero escalonado ideal para exhibir plantas de interior, esculturas y recuerdos.", colores: [maderaColores[4], maderaColores[0], maderaColores[3]] }
+                    { nombre: "Panel Flotante Lambrin Encino", imagen: "https://oechsle.vteximg.com.br/arquivos/ids/18161186-800-800/2597445_1.jpg?v=638536518720500000", descripcion: "Pared decorativa en listones verticales de madera con consola inferior suspendida para aparatos.", colores: [DEFAULT_COLORS[0], DEFAULT_COLORS[1], DEFAULT_COLORS[3]] }
                 ]
             },
             comedores: {
-                title: "Comedores y Mesas Ebanistería Fina",
+                title: "Comedores y Mesas",
                 badge: "Comedores y Mesas",
                 formTipo: "Comedor / Mesa",
+                coverImage: "https://www.elmueble.com/medio/2020/10/07/00517094_d4158770_1200x1500.jpg",
+                description: "Mesas robustas cuadradas, rectangulares y redondas con sillas artesanales a juego.",
                 items: [
-                    { nombre: "Comedor Sólido 8 Personas Pino", imagen: "https://www.elmueble.com/medio/2020/10/07/00517094_d4158770_1200x1500.jpg", descripcion: "Mesa robusta de cubierta gruesa con 8 sillas ergonómicas tapizadas en tela repelente a líquidos.", colores: [maderaColores[0], maderaColores[3], maderaColores[1]] },
-                    { nombre: "Mesa Redonda 6 Sillas Nogal", imagen: "https://images.unsplash.com/photo-1615066390971-03e4e1c36ddf?auto=format&fit=crop&q=80&w=1000", descripcion: "Diseño acogedor con base central en estrella que maximiza el espacio libre para las piernas.", colores: [maderaColores[1], maderaColores[2], maderaColores[0]] },
-                    { nombre: "Comedor Imperial 10 Sillas Caoba", imagen: "https://images.unsplash.com/photo-1617806118233-18e1de247200?auto=format&fit=crop&q=80&w=1000", descripcion: "Mesa extensible de gran dimensión con cabeceras de sillón ebanista y acabados clásicos.", colores: [maderaColores[2], maderaColores[1], maderaColores[3]] },
-                    { nombre: "Comedor Escandinavo 4 Sillas Encino", imagen: "https://images.unsplash.com/photo-1530018607912-eff2daa1bac4?auto=format&fit=crop&q=80&w=1000", descripcion: "Set compacto ideal para departamentos o desayunadores con sillas estilo nórdico.", colores: [maderaColores[4], maderaColores[0], maderaColores[5]] },
-                    { nombre: "Mesa Ebanista Rectangular Cedro", imagen: "https://images.unsplash.com/photo-1577140917170-285929fb55b7?auto=format&fit=crop&q=80&w=1000", descripcion: "Cubierta en una sola pieza con bisel perimetral y patas cónicas reforzadas en ensamble espiga.", colores: [maderaColores[3], maderaColores[0], maderaColores[2]] },
-                    { nombre: "Buffetero de Comedor Roble Ahumado", imagen: "https://images.unsplash.com/photo-1595428774223-ef52624120d2?auto=format&fit=crop&q=80&w=1000", descripcion: "Credenza complementaria para guardar loza, manteles y cubiertos finos a juego con la mesa.", colores: [maderaColores[1], maderaColores[5], maderaColores[0]] },
-                    { nombre: "Comedor Rústico 6 Personas Pino Sierra", imagen: "https://images.unsplash.com/photo-1544457070-4cd773b4d71e?auto=format&fit=crop&q=80&w=1000", descripcion: "Mesa al estilo hacienda mexicana con banca corrida lateral y sillas individuales.", colores: [maderaColores[0], maderaColores[3], maderaColores[1]] },
-                    { nombre: "Mesa Cuadrada 8 Personas Gris Ahumado", imagen: "https://images.unsplash.com/photo-1567016432779-094069958ea5?auto=format&fit=crop&q=80&w=1000", descripcion: "Formato cuadrado moderno que propicia la conversación entre todos los comensales.", colores: [maderaColores[5], maderaColores[1], maderaColores[4]] }
+                    { nombre: "Comedor Sólido 8 Personas Pino", imagen: "https://www.elmueble.com/medio/2020/10/07/00517094_d4158770_1200x1500.jpg", descripcion: "Mesa robusta de cubierta gruesa con 8 sillas ergonómicas tapizadas en tela repelente a líquidos.", colores: [DEFAULT_COLORS[0], DEFAULT_COLORS[3], DEFAULT_COLORS[1]] }
                 ]
             }
         };
 
-        let currentCategoryKey = '';
+        function loadState() {
+            let colors = JSON.parse(JSON.stringify(DEFAULT_COLORS));
+            let catalog = JSON.parse(JSON.stringify(DEFAULT_CATALOG));
+            try {
+                const sc = JSON.parse(localStorage.getItem(STORAGE_KEY_COLORS));
+                if (Array.isArray(sc) && sc.length > 0) colors = sc;
+            } catch (_) {}
+            try {
+                const scat = JSON.parse(localStorage.getItem(STORAGE_KEY_CATALOG));
+                if (scat && typeof scat === "object" && Object.keys(scat).length > 0) catalog = scat;
+            } catch (_) {}
+            return { colors, catalog };
+        }
+
+        let state = loadState();
+        let isOwner = sessionStorage.getItem(STORAGE_KEY_SESSION) === "1";
+        let currentCategoryKey = "";
         let currentItemIndex = 0;
         let selectedColor = null;
-        let imagenReferenciaBase64 = '';
-        let imagenReferenciaNombre = 'Sin imagen adjunta';
+        let uploadedCatDataUrl = "";
+        let uploadedItemDataUrl = "";
 
-        function populateModeloSelect(tipoSeleccionado = '', modeloPreseleccionado = '') {
-            const modeloSelect = document.getElementById('modeloReferencia');
-            modeloSelect.innerHTML = '<option value="Sin modelo específico">Sin modelo específico</option>';
+        function saveState() {
+            localStorage.setItem(STORAGE_KEY_COLORS, JSON.stringify(state.colors));
+            localStorage.setItem(STORAGE_KEY_CATALOG, JSON.stringify(state.catalog));
+        }
 
-            const mapaTipos = {
-                "Cocina Integral": "cocinas",
-                "Clóset / Vestidor": "closets",
-                "Sala / Centro de Entretenimiento": "salas",
-                "Comedor / Mesa": "comedores"
+        function slugify(str) {
+            return str.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "_").replace(/^_|_$/g, "") || ("cat_" + Date.now());
+        }
+
+        function fileToCompressedDataUrl(file, callback) {
+            if (!file) return callback("");
+            const allowed = ["image/jpeg", "image/png", "image/webp"];
+            if (!allowed.includes(file.type) || file.size > 1024 * 1024) {
+                alert("La imagen debe ser JPG, PNG o WEBP y pesar máximo 1 MB.");
+                return callback("");
+            }
+            const reader = new FileReader();
+            reader.onload = () => {
+                const img = new Image();
+                img.onload = () => {
+                    const maxW = 1000;
+                    let w = img.width, h = img.height;
+                    if (w > maxW) { h = Math.round((h * maxW) / w); w = maxW; }
+                    const canvas = document.createElement("canvas");
+                    canvas.width = w; canvas.height = h;
+                    canvas.getContext("2d").drawImage(img, 0, 0, w, h);
+                    callback(canvas.toDataURL("image/jpeg", 0.78));
+                };
+                img.src = reader.result;
             };
+            reader.readAsDataURL(file);
+        }
 
-            const key = mapaTipos[tipoSeleccionado];
-            if (key && catalogData[key]) {
-                catalogData[key].items.forEach(item => {
-                    const opt = document.createElement('option');
+        function renderCatalogAndQuoteSelects() {
+            const catGrid = document.getElementById("catalog-categories-grid");
+            catGrid.innerHTML = "";
+
+            Object.entries(state.catalog).forEach(([key, cat]) => {
+                const count = (cat.items || []).length;
+                const cover = cat.coverImage || (cat.items && cat.items[0] && cat.items[0].imagen) || "https://images.unsplash.com/photo-1556909211-36987daf7b4d?auto=format&fit=crop&q=80&w=800";
+                const card = document.createElement("div");
+                card.className = "bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 card-zoom cursor-pointer group flex flex-col justify-between border border-gray-100";
+                card.onclick = () => openCategoryModal(key);
+                card.innerHTML = `
+                    <div>
+                        <div class="h-64 overflow-hidden relative">
+                            <img src="${cover}" alt="${cat.title}" class="w-full h-full object-cover transition-transform duration-500">
+                            <div class="absolute inset-0 bg-black bg-opacity-25 group-hover:bg-opacity-10 transition-all"></div>
+                            <span class="absolute top-4 right-4 bg-madera-oscura/90 text-white text-xs font-semibold px-3 py-1 rounded-full backdrop-blur-sm">${count} ${count === 1 ? "Modelo" : "Modelos"}</span>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-serif font-bold text-madera-oscura mb-2 group-hover:text-madera-media transition-colors">${cat.title}</h3>
+                            <p class="text-sm text-gray-600">${cat.description || "Muebles personalizados fabricados a la medida."}</p>
+                        </div>
+                    </div>
+                    <div class="px-6 pb-6 pt-0 text-right">
+                        <span class="text-xs font-bold text-madera-media tracking-wider uppercase inline-flex items-center gap-1 group-hover:translate-x-1 transition-transform">Explorar Categoría &rarr;</span>
+                    </div>
+                `;
+                catGrid.appendChild(card);
+            });
+
+            const tipoSelect = document.getElementById("tipoMueble");
+            const prevTipo = tipoSelect.value;
+            tipoSelect.innerHTML = '<option value="" selected disabled>Selecciona un tipo de mueble...</option>';
+            Object.values(state.catalog).forEach(cat => {
+                const opt = document.createElement("option");
+                opt.value = cat.formTipo || cat.title;
+                opt.textContent = cat.formTipo || cat.title;
+                tipoSelect.appendChild(opt);
+            });
+            if (Array.from(tipoSelect.options).some(o => o.value === prevTipo)) {
+                tipoSelect.value = prevTipo;
+            }
+
+            const matSelect = document.getElementById("material");
+            const prevMat = matSelect.value;
+            matSelect.innerHTML = '<option value="" selected disabled>Selecciona material o tono...</option>';
+            state.colors.forEach(c => {
+                const opt = document.createElement("option");
+                opt.value = c.nombre;
+                opt.textContent = c.nombre;
+                matSelect.appendChild(opt);
+            });
+            if (Array.from(matSelect.options).some(o => o.value === prevMat)) {
+                matSelect.value = prevMat;
+            }
+
+            const modeloSelect = document.getElementById("modeloReferencia");
+            const prevModelo = modeloSelect.value;
+            populateModeloSelect(tipoSelect.value, prevModelo);
+        }
+
+        function populateModeloSelect(tipoSeleccionado = "", modeloPreseleccionado = "") {
+            const modeloSelect = document.getElementById("modeloReferencia");
+            modeloSelect.innerHTML = '<option value="Sin modelo específico">Sin modelo específico</option>';
+            const entry = Object.values(state.catalog).find(c => (c.formTipo || c.title) === tipoSeleccionado);
+            if (entry && Array.isArray(entry.items)) {
+                entry.items.forEach(item => {
+                    const opt = document.createElement("option");
                     opt.value = item.nombre;
                     opt.textContent = item.nombre;
-                    if (item.nombre === modeloPreseleccionado) {
-                        opt.selected = true;
-                    }
+                    if (item.nombre === modeloPreseleccionado) opt.selected = true;
                     modeloSelect.appendChild(opt);
                 });
             }
@@ -637,16 +762,21 @@
 
         function openCategoryModal(categoryKey) {
             currentCategoryKey = categoryKey;
-            const data = catalogData[categoryKey];
+            const data = state.catalog[categoryKey];
             if (!data) return;
 
-            document.getElementById('category-modal-title').textContent = data.title;
-            const container = document.getElementById('category-items-container');
-            container.innerHTML = '';
+            document.getElementById("category-modal-title").textContent = data.title;
+            const container = document.getElementById("category-items-container");
+            container.innerHTML = "";
 
-            data.items.forEach((item, index) => {
-                const itemCard = `
-                    <div onclick="openProductDetail('${categoryKey}', ${index})" class="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 border border-gray-200 flex flex-col justify-between cursor-pointer group">
+            if (!data.items || data.items.length === 0) {
+                container.innerHTML = '<p class="text-sm text-gray-500 col-span-full text-center py-8">Próximamente se agregarán modelos en esta categoría.</p>';
+            } else {
+                data.items.forEach((item, index) => {
+                    const itemCard = document.createElement("div");
+                    itemCard.className = "bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 border border-gray-200 flex flex-col justify-between cursor-pointer group";
+                    itemCard.onclick = () => openProductDetail(categoryKey, index);
+                    itemCard.innerHTML = `
                         <div>
                             <div class="h-44 overflow-hidden relative">
                                 <img src="${item.imagen}" alt="${item.nombre}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
@@ -664,291 +794,464 @@
                                 Ampliar & Tonos &rarr;
                             </span>
                         </div>
-                    </div>
-                `;
-                container.innerHTML += itemCard;
-            });
+                    `;
+                    container.appendChild(itemCard);
+                });
+            }
 
-            const modal = document.getElementById('category-modal');
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-            document.body.style.overflow = 'hidden';
+            const modal = document.getElementById("category-modal");
+            modal.classList.remove("hidden");
+            modal.classList.add("flex");
+            document.body.style.overflow = "hidden";
         }
 
         function closeCategoryModal() {
-            const modal = document.getElementById('category-modal');
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
-            document.body.style.overflow = '';
+            const modal = document.getElementById("category-modal");
+            modal.classList.add("hidden");
+            modal.classList.remove("flex");
+            document.body.style.overflow = "";
         }
 
         function openProductDetail(categoryKey, index) {
             currentCategoryKey = categoryKey;
             currentItemIndex = index;
-            const item = catalogData[categoryKey].items[index];
+            const item = state.catalog[categoryKey].items[index];
 
-            document.getElementById('detail-category-badge').textContent = catalogData[categoryKey].badge;
-            document.getElementById('detail-title').textContent = item.nombre;
-            document.getElementById('detail-description').textContent = item.descripcion;
-            document.getElementById('detail-image').src = item.imagen;
+            document.getElementById("detail-category-badge").textContent = state.catalog[categoryKey].badge || state.catalog[categoryKey].title;
+            document.getElementById("detail-title").textContent = item.nombre;
+            document.getElementById("detail-description").textContent = item.descripcion;
+            document.getElementById("detail-image").src = item.imagen;
 
-            const colorsContainer = document.getElementById('color-swatches');
-            colorsContainer.innerHTML = '';
-            
-            selectedColor = item.colores[0];
-            document.getElementById('selected-color-name').textContent = selectedColor.nombre;
+            const colorsContainer = document.getElementById("color-swatches");
+            colorsContainer.innerHTML = "";
 
-            item.colores.forEach((color, idx) => {
+            const palette = (item.colores && item.colores.length > 0) ? item.colores : state.colors;
+            selectedColor = palette[0] || { nombre: "Encino Natural", hex: "#D2B48C" };
+            document.getElementById("selected-color-name").textContent = selectedColor.nombre;
+
+            palette.forEach((color, idx) => {
                 const isActive = idx === 0;
-                const swatch = document.createElement('button');
-                swatch.type = 'button';
-                swatch.className = `w-8 h-8 rounded-full border-2 transition-transform transform hover:scale-110 flex items-center justify-center ${isActive ? 'ring-2 ring-madera-media ring-offset-2 border-white scale-110' : 'border-gray-300'}`;
+                const swatch = document.createElement("button");
+                swatch.type = "button";
+                swatch.className = `w-8 h-8 rounded-full border-2 transition-transform transform hover:scale-110 flex items-center justify-center ${isActive ? "ring-2 ring-madera-media ring-offset-2 border-white scale-110" : "border-gray-300"}`;
                 swatch.style.backgroundColor = color.hex;
                 swatch.title = color.nombre;
 
                 swatch.onclick = () => {
                     Array.from(colorsContainer.children).forEach(child => {
-                        child.classList.remove('ring-2', 'ring-madera-media', 'ring-offset-2', 'border-white', 'scale-110');
-                        child.classList.add('border-gray-300');
+                        child.classList.remove("ring-2", "ring-madera-media", "ring-offset-2", "border-white", "scale-110");
+                        child.classList.add("border-gray-300");
                     });
-                    swatch.classList.add('ring-2', 'ring-madera-media', 'ring-offset-2', 'border-white', 'scale-110');
-                    swatch.classList.remove('border-gray-300');
+                    swatch.classList.add("ring-2", "ring-madera-media", "ring-offset-2", "border-white", "scale-110");
+                    swatch.classList.remove("border-gray-300");
 
                     selectedColor = color;
-                    document.getElementById('selected-color-name').textContent = color.nombre;
+                    document.getElementById("selected-color-name").textContent = color.nombre;
                 };
 
                 colorsContainer.appendChild(swatch);
             });
 
-            const detailModal = document.getElementById('product-detail-modal');
-            detailModal.classList.remove('hidden');
-            detailModal.classList.add('flex');
+            const detailModal = document.getElementById("product-detail-modal");
+            detailModal.classList.remove("hidden");
+            detailModal.classList.add("flex");
         }
 
         function closeProductDetailModal() {
-            const detailModal = document.getElementById('product-detail-modal');
-            detailModal.classList.add('hidden');
-            detailModal.classList.remove('flex');
+            const detailModal = document.getElementById("product-detail-modal");
+            detailModal.classList.add("hidden");
+            detailModal.classList.remove("flex");
         }
 
         function quoteCurrentDetailProduct() {
-            const catData = catalogData[currentCategoryKey];
+            const catData = state.catalog[currentCategoryKey];
             const item = catData.items[currentItemIndex];
             const colorName = selectedColor ? selectedColor.nombre : "";
 
             closeProductDetailModal();
             closeCategoryModal();
 
-            const tipoSelect = document.getElementById('tipoMueble');
-            tipoSelect.value = catData.formTipo;
-            document.getElementById('error-tipoMueble').classList.add('hidden');
-            populateModeloSelect(catData.formTipo, item.nombre);
+            const tipoVal = catData.formTipo || catData.title;
+            const tipoSelect = document.getElementById("tipoMueble");
+            tipoSelect.value = tipoVal;
+            document.getElementById("error-tipoMueble").classList.add("hidden");
+            populateModeloSelect(tipoVal, item.nombre);
 
             if (colorName) {
-                const matSelect = document.getElementById('material');
+                const matSelect = document.getElementById("material");
                 const existe = Array.from(matSelect.options).some(o => o.value === colorName);
                 if (existe) {
                     matSelect.value = colorName;
-                    document.getElementById('error-material').classList.add('hidden');
+                    document.getElementById("error-material").classList.add("hidden");
                 }
             }
 
-            const contactoSection = document.getElementById('contacto');
-            contactoSection.scrollIntoView({ behavior: 'smooth' });
+            document.getElementById("contacto").scrollIntoView({ behavior: "smooth" });
         }
 
-        function limpiarImagenReferencia() {
-            imagenReferenciaBase64 = '';
-            imagenReferenciaNombre = 'Sin imagen adjunta';
-            document.getElementById('imagenReferencia').value = '';
-            document.getElementById('preview-imagen-box').classList.add('hidden');
-            document.getElementById('preview-imagen-box').classList.remove('flex');
-            document.getElementById('error-imagen').classList.add('hidden');
+        function renderAdminPanel() {
+            const panel = document.getElementById("owner-admin-panel");
+            const badge = document.getElementById("owner-session-badge");
+            if (!isOwner) {
+                panel.classList.add("hidden");
+                badge.classList.add("hidden");
+                return;
+            }
+            panel.classList.remove("hidden");
+            badge.classList.remove("hidden");
+
+            const colorsList = document.getElementById("admin-colors-list");
+            colorsList.innerHTML = "";
+            state.colors.forEach((c, idx) => {
+                const pill = document.createElement("div");
+                pill.className = "inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-gray-200 bg-gray-50 text-xs font-medium";
+                pill.innerHTML = `
+                    <span class="w-4 h-4 rounded-full border border-gray-300" style="background:${c.hex}"></span>
+                    <span>${c.nombre}</span>
+                    <button type="button" class="text-red-600 hover:text-red-800 font-bold ml-1" title="Eliminar tono">&times;</button>
+                `;
+                pill.querySelector("button").onclick = () => {
+                    if (state.colors.length <= 1) return alert("Debe existir al menos un tono.");
+                    state.colors.splice(idx, 1);
+                    saveState();
+                    renderCatalogAndQuoteSelects();
+                    renderAdminPanel();
+                };
+                colorsList.appendChild(pill);
+            });
+
+            const colorBoxes = document.getElementById("new-item-colors-checkboxes");
+            colorBoxes.innerHTML = "";
+            state.colors.forEach((c, idx) => {
+                const lbl = document.createElement("label");
+                lbl.className = "inline-flex items-center gap-1.5 text-xs bg-gray-50 px-2.5 py-1 rounded border border-gray-200 cursor-pointer";
+                lbl.innerHTML = `<input type="checkbox" value="${idx}" class="rounded text-madera-oscura"> <span class="w-3 h-3 rounded-full" style="background:${c.hex}"></span> ${c.nombre}`;
+                colorBoxes.appendChild(lbl);
+            });
+
+            const catList = document.getElementById("admin-categories-list");
+            const catSelect = document.getElementById("new-item-category");
+            const prevCatSelect = catSelect.value;
+            catList.innerHTML = "";
+            catSelect.innerHTML = "";
+
+            Object.entries(state.catalog).forEach(([key, cat]) => {
+                const opt = document.createElement("option");
+                opt.value = key;
+                opt.textContent = cat.title;
+                catSelect.appendChild(opt);
+
+                const card = document.createElement("div");
+                card.className = "p-3 rounded-xl border border-gray-200 bg-gray-50 flex flex-col justify-between gap-2";
+                card.innerHTML = `
+                    <div>
+                        <p class="font-bold text-sm text-madera-oscura">${cat.title}</p>
+                        <p class="text-[11px] text-gray-500">Cotización: ${cat.formTipo || cat.title}</p>
+                        <p class="text-[11px] text-gray-500">Muebles: ${(cat.items || []).length}</p>
+                    </div>
+                    <button type="button" class="text-xs text-red-600 hover:underline self-start">Eliminar categoría</button>
+                `;
+                card.querySelector("button").onclick = () => {
+                    if (Object.keys(state.catalog).length <= 1) return alert("Debe quedar al menos una categoría.");
+                    delete state.catalog[key];
+                    saveState();
+                    renderCatalogAndQuoteSelects();
+                    renderAdminPanel();
+                };
+                catList.appendChild(card);
+            });
+
+            if (prevCatSelect && state.catalog[prevCatSelect]) {
+                catSelect.value = prevCatSelect;
+            }
+            renderAdminItemsList();
+        }
+
+        function renderAdminItemsList() {
+            const catKey = document.getElementById("new-item-category").value;
+            const container = document.getElementById("admin-items-list");
+            container.innerHTML = "";
+            const items = (state.catalog[catKey] && state.catalog[catKey].items) || [];
+            if (items.length === 0) {
+                container.innerHTML = '<p class="text-xs text-gray-500 col-span-full">No hay muebles en esta categoría.</p>';
+                return;
+            }
+            items.forEach((item, idx) => {
+                const box = document.createElement("div");
+                box.className = "border border-gray-200 rounded-xl p-3 bg-gray-50 flex flex-col justify-between gap-2";
+                box.innerHTML = `
+                    <div>
+                        <img src="${item.imagen}" alt="${item.nombre}" class="w-full h-24 object-cover rounded-lg mb-2">
+                        <p class="font-bold text-xs text-madera-oscura">${item.nombre}</p>
+                        <p class="text-[11px] text-gray-600 line-clamp-2">${item.descripcion}</p>
+                    </div>
+                    <button type="button" class="text-xs text-red-600 hover:underline self-start">Quitar mueble</button>
+                `;
+                box.querySelector("button").onclick = () => {
+                    state.catalog[catKey].items.splice(idx, 1);
+                    saveState();
+                    renderCatalogAndQuoteSelects();
+                    renderAdminItemsList();
+                    renderAdminPanel();
+                };
+                container.appendChild(box);
+            });
         }
 
         function esCorreoValido(correo) {
-            const regexCorreo = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-            return regexCorreo.test(correo);
+            return /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(correo);
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            const btn = document.getElementById('mobile-menu-btn');
-            const menu = document.getElementById('mobile-menu');
-            const menuLinks = menu.querySelectorAll('a');
+        document.addEventListener("DOMContentLoaded", () => {
+            renderCatalogAndQuoteSelects();
+            renderAdminPanel();
 
-            btn.addEventListener('click', () => menu.classList.toggle('hidden'));
-            menuLinks.forEach(link => link.addEventListener('click', () => menu.classList.add('hidden')));
+            const btn = document.getElementById("mobile-menu-btn");
+            const menu = document.getElementById("mobile-menu");
+            btn.addEventListener("click", () => menu.classList.toggle("hidden"));
+            menu.querySelectorAll("a").forEach(link => link.addEventListener("click", () => menu.classList.add("hidden")));
 
-            const nombreInput = document.getElementById('nombre');
-            const errNombre = document.getElementById('error-nombre');
-            nombreInput.addEventListener('input', () => {
-                if (nombreInput.value.trim()) {
-                    errNombre.classList.add('hidden');
-                }
-            });
+            const loginModal = document.getElementById("owner-login-modal");
+            const loginForm = document.getElementById("owner-login-form");
+            const passInput = document.getElementById("owner-password-input");
+            const loginErr = document.getElementById("owner-login-error");
 
-            document.getElementById('tipoMueble').addEventListener('change', (e) => {
-                populateModeloSelect(e.target.value);
-                document.getElementById('error-tipoMueble').classList.add('hidden');
-            });
-
-            document.getElementById('material').addEventListener('change', () => {
-                document.getElementById('error-material').classList.add('hidden');
-            });
-
-            const telInput = document.getElementById('telefono');
-            const errTel = document.getElementById('error-telefono');
-            telInput.addEventListener('input', () => {
-                telInput.value = telInput.value.replace(/\D/g, '').slice(0, 10);
-                if (telInput.value.length === 10) {
-                    errTel.classList.add('hidden');
-                }
-            });
-
-            const correoInput = document.getElementById('correo');
-            const errCorreo = document.getElementById('error-correo');
-            correoInput.addEventListener('input', () => {
-                const val = correoInput.value.trim();
-                if (!val || esCorreoValido(val)) {
-                    errCorreo.classList.add('hidden');
-                }
-            });
-
-            const imgInput = document.getElementById('imagenReferencia');
-            const errImg = document.getElementById('error-imagen');
-            const previewBox = document.getElementById('preview-imagen-box');
-            const previewImg = document.getElementById('preview-imagen-img');
-            const previewNombre = document.getElementById('preview-imagen-nombre');
-            const btnQuitarImg = document.getElementById('btn-quitar-imagen');
-
-            imgInput.addEventListener('change', () => {
-                errImg.classList.add('hidden');
-                const file = imgInput.files[0];
-                if (!file) {
-                    limpiarImagenReferencia();
+            const openLogin = () => {
+                menu.classList.add("hidden");
+                if (isOwner) {
+                    document.getElementById("owner-admin-panel").scrollIntoView({ behavior: "smooth" });
                     return;
                 }
+                loginErr.classList.add("hidden");
+                passInput.value = "";
+                loginModal.classList.remove("hidden");
+                loginModal.classList.add("flex");
+                passInput.focus();
+            };
 
-                const tiposPermitidos = ['image/jpeg', 'image/png', 'image/webp'];
-                const maxBytes = 1024 * 1024; // 1 MB
+            const closeLogin = () => {
+                loginModal.classList.add("hidden");
+                loginModal.classList.remove("flex");
+            };
 
-                if (!tiposPermitidos.includes(file.type)) {
-                    errImg.textContent = "Solo se permiten imágenes en formato JPG, PNG o WEBP.";
-                    errImg.classList.remove('hidden');
-                    imgInput.value = '';
-                    return;
+            const logout = () => {
+                isOwner = false;
+                sessionStorage.removeItem(STORAGE_KEY_SESSION);
+                renderAdminPanel();
+            };
+
+            document.getElementById("nav-owner-btn").addEventListener("click", openLogin);
+            document.getElementById("mobile-owner-btn").addEventListener("click", openLogin);
+            document.getElementById("footer-owner-btn").addEventListener("click", openLogin);
+            document.getElementById("close-owner-login-btn").addEventListener("click", closeLogin);
+            document.getElementById("owner-login-overlay").addEventListener("click", closeLogin);
+            document.getElementById("owner-logout-btn").addEventListener("click", logout);
+            document.getElementById("btn-close-panel-logout").addEventListener("click", logout);
+
+            loginForm.addEventListener("submit", (e) => {
+                e.preventDefault();
+                if (passInput.value === OWNER_PASSWORD) {
+                    isOwner = true;
+                    sessionStorage.setItem(STORAGE_KEY_SESSION, "1");
+                    closeLogin();
+                    renderAdminPanel();
+                    document.getElementById("owner-admin-panel").scrollIntoView({ behavior: "smooth" });
+                } else {
+                    loginErr.classList.remove("hidden");
                 }
+            });
 
-                if (file.size > maxBytes) {
-                    errImg.textContent = "La imagen supera el límite de 1 MB. Reduzca su tamaño o peso.";
-                    errImg.classList.remove('hidden');
-                    imgInput.value = '';
-                    return;
+            document.getElementById("add-color-form").addEventListener("submit", (e) => {
+                e.preventDefault();
+                const nombre = document.getElementById("new-color-name").value.trim();
+                const hex = document.getElementById("new-color-hex").value;
+                if (!nombre) return;
+                if (state.colors.some(c => c.nombre.toLowerCase() === nombre.toLowerCase())) {
+                    return alert("Ese tono ya existe.");
                 }
+                state.colors.push({ nombre, hex });
+                saveState();
+                renderCatalogAndQuoteSelects();
+                renderAdminPanel();
+                e.target.reset();
+            });
 
-                const reader = new FileReader();
-                reader.onload = () => {
-                    const img = new Image();
-                    img.onload = () => {
-                        const maxAncho = 1200;
-                        let ancho = img.width;
-                        let alto = img.height;
+            document.getElementById("new-cat-file").addEventListener("change", (e) => {
+                fileToCompressedDataUrl(e.target.files[0], (dataUrl) => {
+                    uploadedCatDataUrl = dataUrl;
+                    if (dataUrl) document.getElementById("new-cat-image").value = "Imagen cargada desde equipo";
+                });
+            });
 
-                        if (ancho > maxAncho) {
-                            alto = Math.round((alto * maxAncho) / ancho);
-                            ancho = maxAncho;
-                        }
+            document.getElementById("add-category-form").addEventListener("submit", (e) => {
+                e.preventDefault();
+                const title = document.getElementById("new-cat-title").value.trim();
+                const formTipo = document.getElementById("new-cat-formtipo").value.trim() || title;
+                const urlVal = document.getElementById("new-cat-image").value.trim();
+                const description = document.getElementById("new-cat-desc").value.trim() || "Muebles personalizados fabricados bajo pedido en Chihuahua.";
+                const coverImage = uploadedCatDataUrl || urlVal;
+                if (!title || !coverImage) return alert("Completa título e imagen.");
 
-                        const canvas = document.createElement('canvas');
-                        canvas.width = ancho;
-                        canvas.height = alto;
-                        const ctx = canvas.getContext('2d');
-                        ctx.drawImage(img, 0, 0, ancho, alto);
+                let key = slugify(title);
+                if (state.catalog[key]) key = key + "_" + Date.now().toString().slice(-4);
 
-                        imagenReferenciaBase64 = canvas.toDataURL('image/jpeg', 0.75);
-                        imagenReferenciaNombre = file.name.replace(/\.[^/.]+$/, "") + ".jpg";
-                        previewImg.src = imagenReferenciaBase64;
-                        previewNombre.textContent = imagenReferenciaNombre;
-                        previewBox.classList.remove('hidden');
-                        previewBox.classList.add('flex');
-                    };
-                    img.src = reader.result;
+                state.catalog[key] = {
+                    title,
+                    badge: title,
+                    formTipo,
+                    coverImage,
+                    description,
+                    items: []
                 };
-                reader.readAsDataURL(file);
+                uploadedCatDataUrl = "";
+                saveState();
+                renderCatalogAndQuoteSelects();
+                renderAdminPanel();
+                e.target.reset();
             });
 
-            btnQuitarImg.addEventListener('click', limpiarImagenReferencia);
+            document.getElementById("new-item-file").addEventListener("change", (e) => {
+                fileToCompressedDataUrl(e.target.files[0], (dataUrl) => {
+                    uploadedItemDataUrl = dataUrl;
+                    if (dataUrl) document.getElementById("new-item-image").value = "Imagen cargada desde equipo";
+                });
+            });
 
-            const form = document.getElementById('contactForm');
-            const submitBtn = document.getElementById('btn-submit-form');
-            const modal = document.getElementById('custom-modal');
-            const modalTitle = document.getElementById('modal-title');
-            const modalMessage = document.getElementById('modal-message');
-            const closeModalBtn = document.getElementById('close-modal-btn');
-            const modalOverlay = document.getElementById('modal-overlay');
+            document.getElementById("new-item-category").addEventListener("change", renderAdminItemsList);
+
+            document.getElementById("add-item-form").addEventListener("submit", (e) => {
+                e.preventDefault();
+                const catKey = document.getElementById("new-item-category").value;
+                const nombre = document.getElementById("new-item-name").value.trim();
+                const urlVal = document.getElementById("new-item-image").value.trim();
+                const descripcion = document.getElementById("new-item-desc").value.trim();
+                const imagen = uploadedItemDataUrl || urlVal;
+
+                if (!catKey || !state.catalog[catKey] || !nombre || !imagen) {
+                    return alert("Completa categoría, nombre e imagen del mueble.");
+                }
+
+                const checkedIndices = Array.from(document.querySelectorAll("#new-item-colors-checkboxes input:checked")).map(cb => Number(cb.value));
+                const colores = checkedIndices.length > 0
+                    ? checkedIndices.map(i => state.colors[i]).filter(Boolean)
+                    : state.colors.slice(0, Math.min(3, state.colors.length));
+
+                state.catalog[catKey].items.push({ nombre, imagen, descripcion, colores });
+                uploadedItemDataUrl = "";
+                saveState();
+                renderCatalogAndQuoteSelects();
+                renderAdminItemsList();
+                renderAdminPanel();
+                e.target.reset();
+            });
+
+            document.getElementById("btn-reset-catalog").addEventListener("click", () => {
+                if (!confirm("¿Restablecer categorías, muebles y tonos a los valores iniciales?")) return;
+                localStorage.removeItem(STORAGE_KEY_CATALOG);
+                localStorage.removeItem(STORAGE_KEY_COLORS);
+                state = { colors: JSON.parse(JSON.stringify(DEFAULT_COLORS)), catalog: JSON.parse(JSON.stringify(DEFAULT_CATALOG)) };
+                renderCatalogAndQuoteSelects();
+                renderAdminPanel();
+            });
+
+            const nombreInput = document.getElementById("nombre");
+            const errNombre = document.getElementById("error-nombre");
+            nombreInput.addEventListener("input", () => {
+                if (nombreInput.value.trim()) errNombre.classList.add("hidden");
+            });
+
+            document.getElementById("tipoMueble").addEventListener("change", (e) => {
+                populateModeloSelect(e.target.value);
+                document.getElementById("error-tipoMueble").classList.add("hidden");
+            });
+
+            document.getElementById("material").addEventListener("change", () => {
+                document.getElementById("error-material").classList.add("hidden");
+            });
+
+            const telInput = document.getElementById("telefono");
+            const errTel = document.getElementById("error-telefono");
+            telInput.addEventListener("input", () => {
+                telInput.value = telInput.value.replace(/\D/g, "").slice(0, 10);
+                if (telInput.value.length === 10) errTel.classList.add("hidden");
+            });
+
+            const correoInput = document.getElementById("correo");
+            const errCorreo = document.getElementById("error-correo");
+            correoInput.addEventListener("input", () => {
+                const val = correoInput.value.trim();
+                if (!val || esCorreoValido(val)) errCorreo.classList.add("hidden");
+            });
+
+            const form = document.getElementById("contactForm");
+            const submitBtn = document.getElementById("btn-submit-form");
+            const modal = document.getElementById("custom-modal");
+            const modalTitle = document.getElementById("modal-title");
+            const modalMessage = document.getElementById("modal-message");
+            const closeModalBtn = document.getElementById("close-modal-btn");
+            const modalOverlay = document.getElementById("modal-overlay");
 
             const showModal = (titulo, mensaje) => {
                 modalTitle.textContent = titulo;
                 modalMessage.textContent = mensaje;
-                modal.classList.remove('hidden');
-                modal.classList.add('flex');
+                modal.classList.remove("hidden");
+                modal.classList.add("flex");
             };
 
             const hideModal = () => {
-                modal.classList.add('hidden');
-                modal.classList.remove('flex');
+                modal.classList.add("hidden");
+                modal.classList.remove("flex");
             };
 
-            form.addEventListener('submit', async (e) => {
+            form.addEventListener("submit", async (e) => {
                 e.preventDefault();
 
                 const nombre = nombreInput.value.trim();
                 const telefono = telInput.value.trim();
                 const correo = correoInput.value.trim();
-                const tipoMueble = document.getElementById('tipoMueble').value;
-                const modeloReferencia = document.getElementById('modeloReferencia').value;
-                const material = document.getElementById('material').value;
-                const aclaraciones = document.getElementById('aclaraciones').value.trim();
+                const tipoMueble = document.getElementById("tipoMueble").value;
+                const modeloReferencia = document.getElementById("modeloReferencia").value;
+                const material = document.getElementById("material").value;
+                const aclaraciones = document.getElementById("aclaraciones").value.trim();
 
                 let formularioValido = true;
 
                 if (!nombre) {
-                    errNombre.classList.remove('hidden');
+                    errNombre.classList.remove("hidden");
                     formularioValido = false;
                     nombreInput.focus();
                 } else {
-                    errNombre.classList.add('hidden');
+                    errNombre.classList.add("hidden");
                 }
 
                 if (!/^\d{10}$/.test(telefono)) {
-                    errTel.classList.remove('hidden');
+                    errTel.classList.remove("hidden");
                     if (formularioValido) telInput.focus();
                     formularioValido = false;
                 } else {
-                    errTel.classList.add('hidden');
+                    errTel.classList.add("hidden");
                 }
 
                 if (correo && !esCorreoValido(correo)) {
-                    errCorreo.classList.remove('hidden');
+                    errCorreo.classList.remove("hidden");
                     if (formularioValido) correoInput.focus();
                     formularioValido = false;
                 } else {
-                    errCorreo.classList.add('hidden');
+                    errCorreo.classList.add("hidden");
                 }
 
                 if (!tipoMueble) {
-                    document.getElementById('error-tipoMueble').classList.remove('hidden');
+                    document.getElementById("error-tipoMueble").classList.remove("hidden");
                     formularioValido = false;
                 } else {
-                    document.getElementById('error-tipoMueble').classList.add('hidden');
+                    document.getElementById("error-tipoMueble").classList.add("hidden");
                 }
 
                 if (!material) {
-                    document.getElementById('error-material').classList.remove('hidden');
+                    document.getElementById("error-material").classList.remove("hidden");
                     formularioValido = false;
                 } else {
-                    document.getElementById('error-material').classList.add('hidden');
+                    document.getElementById("error-material").classList.add("hidden");
                 }
 
                 if (!formularioValido) return;
@@ -959,13 +1262,11 @@
                 const payload = {
                     nombre,
                     telefono,
-                    correo: correo || 'No proporcionado',
+                    correo: correo || "No proporcionado",
                     tipoMueble,
                     modeloReferencia,
                     material,
-                    imagenNombre: imagenReferenciaNombre,
-                    imagenReferencia: imagenReferenciaBase64 || 'Sin imagen',
-                    aclaraciones: aclaraciones || 'Ninguna'
+                    aclaraciones: aclaraciones || "Ninguna"
                 };
 
                 try {
@@ -981,8 +1282,7 @@
                         "Su solicitud quedó registrada. La cotización formal, el anticipo del 50%, la liquidación en 3 a 4 meses y los pagos en efectivo o transferencia bancaria directa se realizan de manera presencial."
                     );
                     form.reset();
-                    limpiarImagenReferencia();
-                    populateModeloSelect('');
+                    populateModeloSelect("");
                 } catch (err) {
                     showModal(
                         "Error al registrar",
@@ -994,8 +1294,8 @@
                 }
             });
 
-            closeModalBtn.addEventListener('click', hideModal);
-            modalOverlay.addEventListener('click', hideModal);
+            closeModalBtn.addEventListener("click", hideModal);
+            modalOverlay.addEventListener("click", hideModal);
         });
     </script>
 </body>
